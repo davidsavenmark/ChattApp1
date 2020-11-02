@@ -1,0 +1,25 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.ChattApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#71D7FF</item>
+        <item name="colorPrimaryVariant">#69B7C1</item>
+        <item name="colorOnPrimary">#71D7FF</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#A47DE8</item>
+        <item name="colorSecondaryVariant">#4BCA58</item>
+        <item name="colorOnSecondary">#4264F8</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.ChattApp.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.ChattApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.ChattApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>
