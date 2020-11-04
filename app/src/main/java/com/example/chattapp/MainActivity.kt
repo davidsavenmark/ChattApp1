@@ -68,11 +68,7 @@ class MainActivity : AppCompatActivity() {
             fragments = ArrayList<Fragment>()
             titles = ArrayList<String>()
 
-
-
         }
-
-
 
         override fun getItem(position: Int): Fragment {
 
