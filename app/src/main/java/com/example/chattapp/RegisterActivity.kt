@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 
@@ -13,6 +14,8 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_register)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_register)
+        val registerButton: Button = findViewById(R.id.register_btn)
+
        setSupportActionBar(toolbar)
         supportActionBar!!.title = "Register"
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -20,6 +23,9 @@ class RegisterActivity : AppCompatActivity() {
             val intent = Intent(this@RegisterActivity, WelcomeActivity::class.java)
             startActivity(intent)
             finish()
+        }
+        registerButton.setOnClickListener {
+
         }
 
     }
