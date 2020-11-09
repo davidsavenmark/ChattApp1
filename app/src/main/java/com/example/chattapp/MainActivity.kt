@@ -7,6 +7,7 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -15,19 +16,35 @@ import androidx.viewpager.widget.ViewPager
 import com.example.chattapp.Fragments.ChatsFragment
 import com.example.chattapp.Fragments.SearchFragment
 import com.example.chattapp.Fragments.SettingsFragment
+import com.example.chattapp.ModelClasses.Users
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
+import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
+
+    var refUsers: DatabaseReference? = null
+    var firebaseUser: FirebaseUser? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar_main))
 
+        firebaseUser = FirebaseAuth.getInstance().currentUser
+        refUsers = FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
+
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
         setSupportActionBar(toolbar)
         supportActionBar!!.title = ""
+
+        val user_name = findViewById<TextView>(R.id.user_name)
+        val profile_image = findViewById<TextView>(R.id.profile_image)
 
 
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
@@ -40,6 +57,24 @@ class MainActivity : AppCompatActivity() {
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
+
+        //display username and profil picture
+        refUsers!!.addValueEventListener(object :  ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()){
+                    val user: Users? = p0.getValue(Users::class.java)
+
+                    user_name.text = user!!.getUserName()
+                    Picasso.get().load(user.getProfile()).into(profile_image);
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+        })
+
 
     }
 
