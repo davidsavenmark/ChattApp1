@@ -65,7 +65,7 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this@RegisterActivity,"Please write password.", Toast.LENGTH_LONG).show()
             }
             else -> {
-                mAuth.createUserWithEmailAndPassword(email.toString(), password.toString())
+                mAuth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
                     .addOnCompleteListener{task ->
                         if (task.isSuccessful) {
                             firebaseUserID  = mAuth.currentUser!!.uid
@@ -94,32 +94,16 @@ class RegisterActivity : AppCompatActivity() {
                                         finish()
                                     }
 
-
                                 }
                         } else {
-                            Log.d("!!!", "Error 1")
+
                             Toast.makeText(this@RegisterActivity,"Error Message: " + task.exception!!.message.toString(), Toast.LENGTH_LONG).show()
 
                         }
-
                     }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
-
 }
 
 
