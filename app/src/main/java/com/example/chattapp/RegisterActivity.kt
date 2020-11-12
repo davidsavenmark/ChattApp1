@@ -68,7 +68,6 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this@RegisterActivity,"Please write password.", Toast.LENGTH_LONG).show()
             }
             else
-
             {
                 mAuth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
                 .addOnCompleteListener{task ->
@@ -96,21 +95,18 @@ class RegisterActivity : AppCompatActivity() {
                                         startActivity(intent)
                                         finish()
                                     }
-
+                                    else
+                                    {
+                                        Toast.makeText(this@RegisterActivity,"Error Message: " + task.exception!!.message.toString(), Toast.LENGTH_LONG).show()
+                                    }
                                 }
                     }
-                    else
-                    {
-                        Toast.makeText(this@RegisterActivity,"Error Message: " + task.exception!!.message.toString(), Toast.LENGTH_LONG).show()
-                    }
-
                 }
-
-
-        }
+            }
 
     }
 }
+
 
 
 
