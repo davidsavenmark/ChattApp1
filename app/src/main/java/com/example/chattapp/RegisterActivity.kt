@@ -54,40 +54,43 @@ class RegisterActivity : AppCompatActivity() {
         val email = findViewById<EditText>(R.id.email_register)
         val password = findViewById<EditText>(R.id.password_register)
 
-        when {
-            username.equals("") -> {
+        if (username.equals(""))
+
+            {
                 Toast.makeText(this@RegisterActivity,"Please write username.", Toast.LENGTH_LONG).show()
             }
-            email.equals("") -> {
+            else if (email.equals(""))
+            {
                 Toast.makeText(this@RegisterActivity,"Please write email.", Toast.LENGTH_LONG).show()
             }
-            password.equals("") -> {
+             else if (password.equals(""))
+            {
                 Toast.makeText(this@RegisterActivity,"Please write password.", Toast.LENGTH_LONG).show()
             }
-            else -> {
+            else
+
+            {
                 mAuth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
-                    .addOnCompleteListener{task ->
-                        if (task.isSuccessful) {
-                            firebaseUserID  = mAuth.currentUser!!.uid
+                .addOnCompleteListener{task ->
+                    if (task.isSuccessful)
+                    {
+                        firebaseUserID  = mAuth.currentUser!!.uid
+                        refUsers = FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUserID)
+                        val userHashMap = HashMap<String, Any>()
+                        userHashMap["uid"] = firebaseUserID
+                        userHashMap["username"] = username
+                        userHashMap["profile"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/profile_image.png?alt=media&token=6e7f78cd-df94-4b29-9304-17cb586e57ef"
+                        userHashMap["cover"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/linear_green_cover.png?alt=media&token=bdf5ffe1-3171-4b09-a3af-3a6e201e23f4"
+                        userHashMap["status"] = "offline"
+                        userHashMap["search"] =  username
+                        //userHashMap["facebook"] = "https://m.facebook.com"
+                        //userHashMap["instagram"] = "https://m.instagram.com"
+                        //userHashMap["website"] = "https://www.google.com"
 
-                            refUsers = FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUserID)
-
-
-                            val userHashMap = HashMap<String, Any>()
-                            userHashMap["uid"] = firebaseUserID
-                            userHashMap["username"] = username
-                            userHashMap["profile"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/profile_image.png?alt=media&token=6e7f78cd-df94-4b29-9304-17cb586e57ef"
-                            userHashMap["cover"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/linear_green_cover.png?alt=media&token=bdf5ffe1-3171-4b09-a3af-3a6e201e23f4"
-                            userHashMap["status"] = "offline"
-                            userHashMap["search"] =  username.toString() //  username.toLowerCase fungerade ej så jag testade denna
-                            //userHashMap["facebook"] = "https://m.facebook.com"
-                            //userHashMap["instagram"] = "https://m.instagram.com"
-                            //userHashMap["website"] = "https://www.google.com"
-
-
-                            refUsers.updateChildren(userHashMap)
+                        refUsers.updateChildren(userHashMap)
                                 .addOnCompleteListener{task ->
-                                    if (task.isSuccessful) {
+                                    if (task.isSuccessful)
+                                    {
                                         val intent = Intent(this@RegisterActivity, MainActivity::class.java)
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                                         startActivity(intent)
@@ -95,17 +98,19 @@ class RegisterActivity : AppCompatActivity() {
                                     }
 
                                 }
-                        } else {
-
-                            Toast.makeText(this@RegisterActivity,"Error Message: " + task.exception!!.message.toString(), Toast.LENGTH_LONG).show()
-
-                        }
                     }
-            }
+                    else
+                    {
+                        Toast.makeText(this@RegisterActivity,"Error Message: " + task.exception!!.message.toString(), Toast.LENGTH_LONG).show()
+                    }
+
+                }
+
+
         }
+
     }
 }
-
 
 
 
