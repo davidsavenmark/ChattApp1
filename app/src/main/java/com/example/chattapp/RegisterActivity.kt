@@ -2,19 +2,20 @@ package com.example.chattapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.chattapp.data.ChatUser
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var refUsers: DatabaseReference
     private var firebaseUserID: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,37 +47,38 @@ class RegisterActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password_register)
 
         when {
-            username.equals("") -> {
-                Toast.makeText(this@RegisterActivity, "Please write username.", Toast.LENGTH_LONG).show()
+            username.text.isBlank() -> {
+                toastMaker("Please write username.")
             }
-            email.equals("") -> {
-                Toast.makeText(this@RegisterActivity, "Please write email.", Toast.LENGTH_LONG).show()
+            email.text.isBlank() -> {
+                toastMaker("Please write email.")
             }
-            password.equals("") -> {
-                Toast.makeText(this@RegisterActivity, "Please write password.", Toast.LENGTH_LONG).show()
+            password.text.isBlank() -> {
+                toastMaker("Please write password.")
             }
             else -> {
-                mAuth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
+                mAuth.createUserWithEmailAndPassword(email.text.toString().trim(), password.text.toString().trim())
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 firebaseUserID = mAuth.currentUser!!.uid
 
-                                refUsers = FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUserID)
+                                val chatUser = ChatUser(firebaseUserID, username.text.toString().trim(), search = username.text.toString().trim())
+
+                                addUserToFirestore(chatUser)
 
 
-                                val userHashMap = HashMap<String, Any>()
+                                /*val userHashMap = HashMap<String, Any>()
                                 userHashMap["uid"] = firebaseUserID
-                                userHashMap["username"] = username
+                                userHashMap["username"] = username.text.toString().trim()
                                 userHashMap["profile"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/profile_image.png?alt=media&token=6e7f78cd-df94-4b29-9304-17cb586e57ef"
                                 userHashMap["cover"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/linear_green_cover.png?alt=media&token=bdf5ffe1-3171-4b09-a3af-3a6e201e23f4"
                                 userHashMap["status"] = "offline"
-                                userHashMap["search"] = username.toString() //  username.toLowerCase fungerade ej så jag testade denna
+                                userHashMap["search"] = username.text.toString().trim() //  username.toLowerCase fungerade ej så jag testade denna
                                 //userHashMap["facebook"] = "https://m.facebook.com"
                                 //userHashMap["instagram"] = "https://m.instagram.com"
                                 //userHashMap["website"] = "https://www.google.com"
-
-
-                                refUsers.updateChildren(userHashMap)
+*/
+/*                                refUsers.updateChildren(userHashMap)
                                         .addOnCompleteListener { task ->
                                             if (task.isSuccessful) {
                                                 val intent = Intent(this@RegisterActivity, MainActivity::class.java)
@@ -84,16 +86,48 @@ class RegisterActivity : AppCompatActivity() {
                                                 startActivity(intent)
                                                 finish()
                                             }
-
                                         }
                             } else {
-
                                 Toast.makeText(this@RegisterActivity, "Error Message: " + task.exception!!.message.toString(), Toast.LENGTH_LONG).show()
+                            }*/
+
 
                             }
+
                         }
             }
         }
+    }
+
+    private fun addUserToFirestore(it: ChatUser) {
+        val db = Firebase.firestore
+
+        db.collection("users").document(it.uid).set(it)
+                .addOnSuccessListener {
+                    logMaker("successful to add user to DB")
+
+                }
+                .addOnFailureListener {
+                    logMaker("failed to add a user.$it")
+                }
+
+        startMainActivity()
+    }
+
+
+    private fun startMainActivity() {
+        val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun toastMaker(text: String) {
+        Toast.makeText(this@RegisterActivity, "$text", Toast.LENGTH_LONG).show()
+    }
+
+    private fun logMaker(text: String) {
+        Log.v("ChatApp", text)
     }
 }
 
