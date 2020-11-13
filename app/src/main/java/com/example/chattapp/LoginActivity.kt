@@ -8,12 +8,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
+
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var refUsers: DatabaseReference
+
     private  var firebaseUserID: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,20 +57,25 @@ class LoginActivity : AppCompatActivity() {
         }
         else
         {
-            mAuth.signInWithEmailAndPassword(email.text.toString(),password.text.toString())
+            mAuth.signInWithEmailAndPassword(email.text.toString().trim(),password.text.toString().trim())
                 .addOnCompleteListener{task->
                     if (task.isSuccessful)
                     {
-                       val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                       startActivity(intent)
-                       finish()
+                        startMainActivity()
                     }
                     else
                     {
-                    Toast.makeText(this@LoginActivity,"Error Message: " + task.exception!!.message.toString(), Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@LoginActivity,"Error Message: " + task.exception!!.message.toString(), Toast.LENGTH_LONG).show()
                     }
                 }
         }
     }
+
+    private fun startMainActivity(){
+        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
+    }
 }
+
