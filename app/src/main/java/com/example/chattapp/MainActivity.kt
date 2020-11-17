@@ -2,44 +2,72 @@ package com.example.chattapp
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.chattapp.Fragments.ChatsFragment
+import com.example.chattapp.Fragments.FriendslistFragment
 import com.example.chattapp.Fragments.SearchFragment
 import com.example.chattapp.Fragments.SettingsFragment
+import com.example.chattapp.ModelClasses.Users
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.user_search_item_layout.*
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar_main))
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar_main)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = ""
+        var firebaseUser = FirebaseAuth.getInstance().currentUser
+        var refUsers =
+            FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
 
+        val toolbar: Toolbar = findViewById(R.id.toolbar_main)
+        supportActionBar!!.title = ""
+        tool_bar_title.text = "${FirebaseAuth.getInstance().currentUser?.email}"
+        setSupportActionBar(toolbar)
 
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
 
-        viewPagerAdapter.addFragment(ChatsFragment(),"Chats")
-        viewPagerAdapter.addFragment(SearchFragment(),"Search")
-        viewPagerAdapter.addFragment(SettingsFragment(),"Settings")
+
+        viewPagerAdapter.addFragment(FriendslistFragment(), "Friends")
+        viewPagerAdapter.addFragment(ChatsFragment(), "Chats")
+        viewPagerAdapter.addFragment(SearchFragment(), "Search")
+        viewPagerAdapter.addFragment(SettingsFragment(), "Settings")
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
+
+        /*refUsers!!.addValueEventListener(object : ValueEventListener{
+                    if (p0.exists())
+                    {
+                        val user: Users? = p0.getValue(Users::class.java)
+
+                        username.text = user!!.getUserName()
+                        Picasso.get().load(user.getProfile()).placeholder(R.drawable.ic_profile).into(profile_image)
+
+                    }
+
+
+        })
+
+         */
 
     }
 
@@ -53,10 +81,8 @@ class MainActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId)
-        {
-            R.id.action_signOut ->
-            {
+        when (item.itemId) {
+            R.id.action_signOut -> {
                 FirebaseAuth.getInstance().signOut()
                 val intent = Intent(this@MainActivity, WelcomeActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -71,9 +97,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     internal class ViewPagerAdapter(fragmentManager: FragmentManager) :
-        FragmentPagerAdapter(fragmentManager)
-
-    {
+        FragmentPagerAdapter(fragmentManager) {
         private val fragments: ArrayList<Fragment>
         private val titles: ArrayList<String>
 
@@ -85,7 +109,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun getItem(position: Int): Fragment {
 
-            return fragments [position]
+            return fragments[position]
         }
 
         override fun getCount(): Int {
@@ -95,9 +119,7 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        fun addFragment (fragment: Fragment, title: String )
-
-        {
+        fun addFragment(fragment: Fragment, title: String) {
             fragments.add(fragment)
             titles.add(title)
         }
@@ -106,7 +128,7 @@ class MainActivity : AppCompatActivity() {
             return titles[i]
         }
 
-        }
-
     }
+
+}
 
