@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chattapp.ModelClasses.Users
 import com.example.chattapp.R
 import com.example.chattapp.data.ChatUser
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -38,7 +39,14 @@ isChatCheck: Boolean
 
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, i: Int)
+    {
+        val user: Users = mUsers[i]
+
+        holder.userNameTxt.text = user!!.getUserName()
+        Picasso.get().load(user.getProfile()).placeholder(R.drawable.ic_profile).into(holder.profileImageView)
+
+
 
     }
 
