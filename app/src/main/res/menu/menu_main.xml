@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.chattapp.MainActivity">
     <item
-        android:id="@+id/action_signOut"
+        android:id="@+id/action_logout"
         android:orderInCategory="100"
-        android:title="Sign Out"
+        android:title="Logout"
         app:showAsAction="never" />
 </menu>
