@@ -87,15 +87,17 @@ class SearchFragment : Fragment() {
         userRef = db.collection("users")
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
     }
-
+/*Function retrieveAllUsers() to get the userlist*/
     private fun retrieveAllUsers() {
 
         userRef.get().addOnSuccessListener { result ->
             userList.clear()
             for (document in result) {
+
                 val it = document.data["username"] as String
+                /*get the item's uid as id*/
                 val id = document.data["uid"] as String
-                /*excluding the currentUser, do not show the current user's on the list*/
+                /*excluding the currentUser, do not add the current user's username on the list*/
                 if (firebaseUserID != id) {
                     userList.add(Users(username = it, uid = id))
                     logMaker("UserName: $it")

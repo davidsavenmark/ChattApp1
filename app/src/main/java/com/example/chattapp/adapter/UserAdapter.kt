@@ -13,6 +13,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class UserAdapter(
     private var userList: MutableList<Users>,
+    //listener as a variable
     private val listener: (Users) -> Unit,
 ) : RecyclerView.Adapter<UserAdapter.ViewHolder?>() {
 
@@ -44,14 +45,15 @@ class UserAdapter(
                     //.placeholder(R.drawable.ic_profile)
                     .into(profileImageView)
             }
+            //just to send the listener out to SearchFragment.kt
             userNameTxt.setOnClickListener {
                 listener(user)
             }
-            //When you click the username, show a windows to ask you if you want to add a friend.
+
         }
     }
 
-    //Notify the changed data.
+    //Notify the changes of data.
     fun updateDataList(list: MutableList<Users>) {
         userList = list
         notifyDataSetChanged()
