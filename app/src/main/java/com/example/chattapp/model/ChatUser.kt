@@ -1,4 +1,4 @@
-package com.example.chattapp.data
+package com.example.chattapp.model
 
 data class ChatUser(
         var uid: String = "",

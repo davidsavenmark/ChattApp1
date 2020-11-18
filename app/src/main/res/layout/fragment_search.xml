@@ -10,17 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
-        android:hint="Search for users"
-        >
-    </EditText>
+        android:hint="Search for users" />
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchList"
-        android:layout_below="@+id/searchUsersET"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_below="@+id/searchUsersET"
+        android:scrollbars="vertical" />
 
 </RelativeLayout>
