@@ -1,10 +1,10 @@
-package com.example.chattapp.Fragments
+package com.example.chattapp.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.chattapp.R
 
 // TODO: Rename parameter arguments, choose names that match

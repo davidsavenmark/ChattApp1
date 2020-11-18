@@ -10,18 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.example.chattapp.Fragments.ChatsFragment
-import com.example.chattapp.Fragments.FriendslistFragment
-import com.example.chattapp.Fragments.SearchFragment
-import com.example.chattapp.Fragments.SettingsFragment
-import com.example.chattapp.ModelClasses.Users
+import com.example.chattapp.fragments.ChatsFragment
+import com.example.chattapp.fragments.FriendslistFragment
+import com.example.chattapp.fragments.SearchFragment
+import com.example.chattapp.fragments.SettingsFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.user_search_item_layout.*
 
 class MainActivity : AppCompatActivity() {
 
