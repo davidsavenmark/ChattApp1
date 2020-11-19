@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_send_message.*
 
 class SendMessageActivity : AppCompatActivity() {
 
-
     private lateinit var messageRef: CollectionReference
     private var messageList = mutableListOf<ChatLine>()
     private lateinit var firebaseUserID: String
@@ -38,6 +37,7 @@ class SendMessageActivity : AppCompatActivity() {
         initDataBase()
         initListener()
         initRecyclerView()
+        realTimeUpdateMessage()
     }
 
     override fun onStart() {
@@ -55,7 +55,7 @@ class SendMessageActivity : AppCompatActivity() {
         val db = Firebase.firestore
         val currentUser = FirebaseAuth.getInstance().currentUser
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
-        val path = getMessageDocumentPath(firebaseUserID,friendUid)
+        val path = getMessageDocumentPath(firebaseUserID, friendUid)
         messageRef = db
             .collection("messages").document(path)
             .collection("ChatLine")
@@ -70,51 +70,23 @@ class SendMessageActivity : AppCompatActivity() {
     }
 
     private fun getChatListData() {
-        messageRef
-            .get()
-            .addOnSuccessListener { result ->
-                messageList.clear()
-                for (document in result) {
-                    val text = document.data["text_message"] as String
-                    val id = document.data["senderUid"] as String
-                    messageList.add(ChatLine(text,id))
-                }
-
-                if (recycler_view_chats.adapter != null) {
-                    val temp = recycler_view_chats.adapter as MessageAdapter
-                    temp.updateDataList()
-                    Log.d("TAG", "adapter is not null now!!! ohohoh")
-                    recycler_view_chats.scrollToPosition(temp.itemCount - 1)
-                }
+        messageRef.get().addOnSuccessListener { result ->
+            messageList.clear()
+            for (document in result) {
+                val text = document.data["text_message"] as String
+                val id = document.data["senderUid"] as String
+                messageList.add(ChatLine(text, id))
             }
+
+            if (recycler_view_chats.adapter != null) {
+                val temp = recycler_view_chats.adapter as MessageAdapter
+                temp.updateDataList()
+                Log.d("TAG", "adapter is not null now!!! ohohoh")
+                recycler_view_chats.scrollToPosition(temp.itemCount - 1)
+            }
+        }
             .addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)
-            }
-            messageRef.addSnapshotListener { snapshots, e ->
-                if (e != null) {
-                    return@addSnapshotListener
-                }
-
-                for (dc in snapshots!!.documentChanges) {
-                    when (dc.type) {
-                        DocumentChange.Type.ADDED -> {
-                            val text = dc.document.data["text_message"] as String
-                            val id = dc.document.data["senderUid"] as String
-                            //get the chat data.
-                            messageList.add(ChatLine(text,id))
-                            if (recycler_view_chats.adapter != null) {
-                                val temp = recycler_view_chats.adapter as MessageAdapter
-                                temp.updateDataList()
-                                Log.d("TAG", "adapter is not null now!!! ohohoh")
-                                recycler_view_chats.scrollToPosition(temp.itemCount - 1)
-                            }
-                        }
-/*For further use of the app, for example modified or remove text messages if you regret.*/
-                        DocumentChange.Type.MODIFIED -> Log.d("TAG", "Modified city: ${dc.document.data}")
-                        DocumentChange.Type.REMOVED -> Log.d("TAG", "Removed city: ${dc.document.data}")
-                        else -> Log.d("TAG", "Nothing happened!!")
-                    }
-                }
             }
     }
 
@@ -129,7 +101,7 @@ class SendMessageActivity : AppCompatActivity() {
 
             val x = messageRef.document("ChatLine${System.currentTimeMillis()}")
             //Add the information to Firestore from the "send" button.
-            val chatLine = ChatLine(message,firebaseUserID)
+            val chatLine = ChatLine(message, firebaseUserID)
             x.set(chatLine, SetOptions.merge())
                 .addOnSuccessListener { logMaker("DocumentSnapshot successfully written") }
                 .addOnFailureListener { exception -> logMaker("Error writing document, $exception") }
@@ -142,7 +114,7 @@ class SendMessageActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         recycler_view_chats.layoutManager = layoutManager
-        val adapter = MessageAdapter(messageList,firebaseUserID)
+        val adapter = MessageAdapter(messageList, firebaseUserID)
         recycler_view_chats.adapter = adapter
         recycler_view_chats.scrollToPosition(adapter.itemCount - 1)
     }
@@ -155,4 +127,35 @@ class SendMessageActivity : AppCompatActivity() {
         Log.d("TAG", text)
     }
 
+    private fun realTimeUpdateMessage(){
+        messageRef.addSnapshotListener { snapshots, e ->
+            if (e != null) {
+                return@addSnapshotListener
+            }
+
+            for (dc in snapshots!!.documentChanges) {
+                when (dc.type) {
+                    DocumentChange.Type.ADDED -> {
+                        val text = dc.document.data["text_message"] as String
+                        val id = dc.document.data["senderUid"] as String
+                        //get the chat data.
+                        messageList.add(ChatLine(text, id))
+                        if (recycler_view_chats.adapter != null) {
+                            val temp = recycler_view_chats.adapter as MessageAdapter
+                            temp.updateDataList()
+                            Log.d("TAG", "adapter is not null now!!! ohohoh")
+                            recycler_view_chats.scrollToPosition(temp.itemCount - 1)
+                        }
+                    }
+/*For further use of the app, for example modified or remove text messages if you regret.*/
+                    DocumentChange.Type.MODIFIED -> Log.d(
+                        "TAG",
+                        "Modified city: ${dc.document.data}"
+                    )
+                    DocumentChange.Type.REMOVED -> Log.d("TAG", "Removed city: ${dc.document.data}")
+                    else -> Log.d("TAG", "Nothing happened!!")
+                }
+            }
+        }
+    }
 }
