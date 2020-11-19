@@ -1,5 +1,6 @@
 package com.example.chattapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.chattapp.MainActivity
 import com.example.chattapp.R
+import com.example.chattapp.SendMessageActivity
 import com.example.chattapp.adapter.FriendAdapter
 import com.example.chattapp.model.ChatUser
 import com.google.firebase.auth.FirebaseAuth
@@ -40,6 +43,8 @@ class FriendsListFragment : Fragment() {
         getFriendListData()
     }
 
+
+
     private fun initFriendDataBase() {
         db = Firebase.firestore
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
@@ -51,7 +56,11 @@ class FriendsListFragment : Fragment() {
         friends_recyclerView.layoutManager = layoutManager
 
         val listener: (ChatUser) -> Unit = {
-            ///cur  + it.name
+            val intent:Intent = Intent(requireContext(), SendMessageActivity::class.java)
+            intent.putExtra("FRIENDUID",it.uid)
+            intent.putExtra("FRIENDUSERNAME",it.username)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
 
         val adapter = FriendAdapter(friendsList, listener)
