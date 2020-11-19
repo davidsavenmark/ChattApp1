@@ -1,7 +1,5 @@
 package com.example.chattapp
 
-import com.example.chattapp.adapter.MessageAdapter
-import com.example.chattapp.model.ChatLine
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -9,8 +7,11 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.chattapp.adapter.MessageAdapter
+import com.example.chattapp.model.ChatLine
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,15 +23,16 @@ class SendMessageActivity : AppCompatActivity() {
     private lateinit var messageRef: CollectionReference
     private var messageList = mutableListOf<ChatLine>()
     private lateinit var firebaseUserID: String
-    private lateinit var friendUid:String
-    private lateinit var friendUsername:String
+    private lateinit var friendUid: String
+    private lateinit var friendUsername: String
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_message)
         getparament()
 
-        username_mchat.text= friendUsername
+        username_mchat.text = friendUsername
         //val username = intent?.getStringExtra(CURRENTUSER)
         //prepareTestData()
         initDataBase()
@@ -42,17 +44,29 @@ class SendMessageActivity : AppCompatActivity() {
         super.onStart()
         getChatListData()
     }
-    private fun getparament(){
-        friendUid  = intent.getStringExtra("FRIENDUID").toString()
-        friendUsername =intent.getStringExtra("FRIENDUSERNAME").toString()
+
+    private fun getparament() {
+        friendUid = intent.getStringExtra("FRIENDUID").toString()
+        friendUsername = intent.getStringExtra("FRIENDUSERNAME").toString()
     }
+
     private fun initDataBase() {
 
         val db = Firebase.firestore
+        val currentUser = FirebaseAuth.getInstance().currentUser
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
+        val path = getMessageDocumentPath(firebaseUserID,friendUid)
         messageRef = db
-            .collection("users").document(firebaseUserID)
-            .collection("friendsCollection").document(friendUid).collection("messages")
+            .collection("messages").document(path)
+            .collection("ChatLine")
+    }
+
+    private fun getMessageDocumentPath(sendUid: String, receiverUid: String): String {
+        return if (sendUid > receiverUid) {
+            "$receiverUid-$sendUid"
+        } else {
+            "$sendUid-$receiverUid"
+        }
     }
 
     private fun getChatListData() {
@@ -61,8 +75,9 @@ class SendMessageActivity : AppCompatActivity() {
             .addOnSuccessListener { result ->
                 messageList.clear()
                 for (document in result) {
-                    val it = document.data["text_message"] as String
-                    messageList.add(ChatLine(it))
+                    val text = document.data["text_message"] as String
+                    val id = document.data["senderUid"] as String
+                    messageList.add(ChatLine(text,id))
                 }
 
                 if (recycler_view_chats.adapter != null) {
@@ -74,6 +89,32 @@ class SendMessageActivity : AppCompatActivity() {
             }
             .addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)
+            }
+            messageRef.addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    return@addSnapshotListener
+                }
+
+                for (dc in snapshots!!.documentChanges) {
+                    when (dc.type) {
+                        DocumentChange.Type.ADDED -> {
+                            val text = dc.document.data["text_message"] as String
+                            val id = dc.document.data["senderUid"] as String
+                            //get the chat data.
+                            messageList.add(ChatLine(text,id))
+                            if (recycler_view_chats.adapter != null) {
+                                val temp = recycler_view_chats.adapter as MessageAdapter
+                                temp.updateDataList()
+                                Log.d("TAG", "adapter is not null now!!! ohohoh")
+                                recycler_view_chats.scrollToPosition(temp.itemCount - 1)
+                            }
+                        }
+/*For further use of the app, for example modified or remove text messages if you regret.*/
+                        DocumentChange.Type.MODIFIED -> Log.d("TAG", "Modified city: ${dc.document.data}")
+                        DocumentChange.Type.REMOVED -> Log.d("TAG", "Removed city: ${dc.document.data}")
+                        else -> Log.d("TAG", "Nothing happened!!")
+                    }
+                }
             }
     }
 
@@ -88,27 +129,20 @@ class SendMessageActivity : AppCompatActivity() {
 
             val x = messageRef.document("ChatLine${System.currentTimeMillis()}")
             //Add the information to Firestore from the "send" button.
-            val chatLine = ChatLine(message)
+            val chatLine = ChatLine(message,firebaseUserID)
             x.set(chatLine, SetOptions.merge())
                 .addOnSuccessListener { logMaker("DocumentSnapshot successfully written") }
                 .addOnFailureListener { exception -> logMaker("Error writing document, $exception") }
 
             toastMaker("Successful sending message $message")
             text_message.setText("")
-            //getChatListData()
-            messageList.add(chatLine)
-            if (recycler_view_chats.adapter != null) {
-                val temp = recycler_view_chats.adapter as MessageAdapter
-                temp.updateDataList()
-                recycler_view_chats.scrollToPosition(temp.itemCount - 1)
-            }
         }
     }
 
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         recycler_view_chats.layoutManager = layoutManager
-        val adapter = MessageAdapter(messageList)
+        val adapter = MessageAdapter(messageList,firebaseUserID)
         recycler_view_chats.adapter = adapter
         recycler_view_chats.scrollToPosition(adapter.itemCount - 1)
     }

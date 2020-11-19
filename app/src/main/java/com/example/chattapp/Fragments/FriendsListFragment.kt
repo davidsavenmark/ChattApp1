@@ -43,8 +43,6 @@ class FriendsListFragment : Fragment() {
         getFriendListData()
     }
 
-
-
     private fun initFriendDataBase() {
         db = Firebase.firestore
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
@@ -59,7 +57,7 @@ class FriendsListFragment : Fragment() {
             val intent:Intent = Intent(requireContext(), SendMessageActivity::class.java)
             intent.putExtra("FRIENDUID",it.uid)
             intent.putExtra("FRIENDUSERNAME",it.username)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
