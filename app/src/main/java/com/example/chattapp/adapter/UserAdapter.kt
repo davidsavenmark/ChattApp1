@@ -44,6 +44,32 @@ class UserAdapter(
                     .load(user.profile)
                     //.placeholder(R.drawable.ic_profile)
                     .into(profileImageView)
+
+                holder.itemView.setOnClickListener {
+                    val options = arrayOf<CharSequence>(
+                        "Send Message",
+                        "Visit Profile"
+                    )
+
+
+                    //val builder: AlertDialog.Builder = AlertDialog.Builder(mContext)
+                    //builder.setTitle("What do you want to do?")
+                    //builder.setItems(options, DialogInterface.OnClickListener { dialog, position ->
+                        if(position == 0)
+                        {
+
+                            //val intent = //Intent//(mContext, SendMessangeActivity::class.java)
+                            //intent.putExtra("visit_id", user.uid)
+                            //mContext.startActivity(intent)
+                        }
+                        if (position == 1)
+                        {
+
+                        }
+                    //})
+                    //builder.show()
+                }
+
             }
             //just to send the listener out to SearchFragment.kt
             userNameTxt.setOnClickListener {
