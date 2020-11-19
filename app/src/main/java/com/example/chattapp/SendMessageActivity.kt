@@ -29,7 +29,7 @@ class SendMessageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_message)
-        getparament()
+        getParameter()
 
         username_mchat.text = friendUsername
         //val username = intent?.getStringExtra(CURRENTUSER)
@@ -45,7 +45,7 @@ class SendMessageActivity : AppCompatActivity() {
         getChatListData()
     }
 
-    private fun getparament() {
+    private fun getParameter() {
         friendUid = intent.getStringExtra("FRIENDUID").toString()
         friendUsername = intent.getStringExtra("FRIENDUSERNAME").toString()
     }
@@ -60,7 +60,7 @@ class SendMessageActivity : AppCompatActivity() {
             .collection("messages").document(path)
             .collection("ChatLine")
     }
-
+//Create the same list of chat recorder between two persons, give it to the same path in document.
     private fun getMessageDocumentPath(sendUid: String, receiverUid: String): String {
         return if (sendUid > receiverUid) {
             "$receiverUid-$sendUid"
@@ -126,7 +126,7 @@ class SendMessageActivity : AppCompatActivity() {
     private fun logMaker(text: String) {
         Log.d("TAG", text)
     }
-
+//Update the new sending messages in messageList.If Added, document changes.MODIFIED,REMOVED can we add in the future.
     private fun realTimeUpdateMessage(){
         messageRef.addSnapshotListener { snapshots, e ->
             if (e != null) {
