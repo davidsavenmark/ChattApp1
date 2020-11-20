@@ -14,14 +14,10 @@ import com.example.chattapp.Fragments.ChatsFragment
 import com.example.chattapp.Fragments.FriendslistFragment
 import com.example.chattapp.Fragments.SearchFragment
 import com.example.chattapp.Fragments.SettingsFragment
-import com.example.chattapp.ModelClasses.Users
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.user_search_item_layout.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -113,10 +109,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun getCount(): Int {
-
             return fragments.size
-
-
         }
 
         fun addFragment(fragment: Fragment, title: String) {
@@ -127,8 +120,6 @@ class MainActivity : AppCompatActivity() {
         override fun getPageTitle(i: Int): CharSequence? {
             return titles[i]
         }
-
     }
-
 }
 
