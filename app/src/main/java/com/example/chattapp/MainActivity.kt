@@ -24,9 +24,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var firebaseUser = FirebaseAuth.getInstance().currentUser
-        var refUsers =
-            FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
+        //var firebaseUser = FirebaseAuth.getInstance().currentUser
+        //var refUsers =
+            //FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
         tool_bar_title.text = "${FirebaseAuth.getInstance().currentUser?.email}"
