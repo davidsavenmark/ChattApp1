@@ -2,6 +2,7 @@ package com.example.chattapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -10,10 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.example.chattapp.Fragments.ChatsFragment
-import com.example.chattapp.Fragments.FriendslistFragment
-import com.example.chattapp.Fragments.SearchFragment
-import com.example.chattapp.Fragments.SettingsFragment
+import com.example.chattapp.Fragments.*
 import com.example.chattapp.ModelClasses.Users
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -50,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         viewPagerAdapter.addFragment(ChatsFragment(), "Chats")
         viewPagerAdapter.addFragment(SearchFragment(), "Search")
         viewPagerAdapter.addFragment(SettingsFragment(), "Settings")
+        viewPagerAdapter.addFragment(ProfileFragment(), "Profile")
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
