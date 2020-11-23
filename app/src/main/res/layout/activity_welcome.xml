@@ -14,7 +14,6 @@
         android:id="@+id/imageView"
         android:layout_width="301dp"
         android:layout_height="256dp"
-        android:layout_marginBottom="50"
         app:srcCompat="@drawable/eea96a4bf47ff4d11964e3d66959d273" />
 
     <TextView
