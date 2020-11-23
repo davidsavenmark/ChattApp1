@@ -41,14 +41,35 @@ android {
 
 
 dependencies {
+
+    implementation 'com.google.firebase:firebase-database-ktx:19.5.1'
+    def glide_version = "4.11.0"
+    def glide_transform_version = "4.1.0"
+    def matisse_version = "0.5.3-beta3"
+
+    //Glide
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
+//This is for Glide to integrate okhttp3.
+    implementation "com.github.bumptech.glide:okhttp3-integration:$glide_version"
+//This is a library for Glide to match different transformation of Image,for example,radius,stretch,dim,etc.
+    implementation "jp.wasabeef:glide-transformations:$glide_transform_version"
+
+//Matisse(Zhihu)s uploader for local pictures, it starts a threade to read the list of local pictures.
+    implementation "com.zhihu.android:matisse:$matisse_version"
 //firebase dependencies:
-    implementation platform('com.google.firebase:firebase-bom:26.0.0')
+
+    implementation platform('com.google.firebase:firebase-bom:26.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
-    // Declare the dependencies for the Firebase Cloud Messaging and Analytics libraries
-    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
+
+
+
+    //recyclerView dependencies
 
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
