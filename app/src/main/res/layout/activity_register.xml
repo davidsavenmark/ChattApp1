@@ -8,11 +8,10 @@
     tools:context=".RegisterActivity">
 
 
-
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.ChattApp.AppBarOverlay">
+        android:theme="@style/Theme.ChattApp.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_register"
@@ -28,11 +27,26 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:layout_height="570dp"
+        android:layout_centerInParent="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_centerInParent="true">
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="117dp"
+            app:srcCompat="@drawable/eea96a4bf47ff4d11964e3d66959d273" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="192dp"
+            android:layout_height="76dp"
+            android:layout_marginBottom="50dp"
+            android:text="Sign Up!"
+            android:textColor="#FFFFFF"
+            android:textSize="45dp" />
 
         <EditText
             android:id="@+id/username_register"
@@ -40,9 +54,9 @@
             android:layout_height="50dp"
             android:background="@drawable/roundstyle"
             android:backgroundTint="@android:color/white"
-            android:hint="Username"
             android:gravity="center"
-            android:inputType="text"
+            android:hint="Username"
+            android:inputType="textPersonName|text"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black">
 
@@ -55,9 +69,9 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/roundstyle"
             android:backgroundTint="@android:color/white"
-            android:hint="Email"
-            android:inputType="text"
             android:gravity="center"
+            android:hint="Email"
+            android:inputType="text|textEmailAddress"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black">
 
@@ -70,9 +84,9 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/roundstyle"
             android:backgroundTint="@android:color/white"
+            android:gravity="center"
             android:hint="Password"
             android:inputType="textPassword"
-            android:gravity="center"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black">
 
@@ -80,10 +94,11 @@
 
         <Button
             android:id="@+id/register_btn"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
+            android:layout_width="151dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:background="@drawable/roundstyle"
+            android:backgroundTint="@android:color/white"
             android:bottomLeftRadius="10dp"
             android:bottomRightRadius="10dp"
             android:text="Register"
