@@ -8,10 +8,10 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.chattapp.data.ChatUser
+import com.example.chattapp.model.ChatUser
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -57,26 +57,33 @@ class RegisterActivity : AppCompatActivity() {
                 toastMaker("Please write password.")
             }
             else -> {
-                mAuth.createUserWithEmailAndPassword(email.text.toString().trim(), password.text.toString().trim())
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                firebaseUserID = mAuth.currentUser!!.uid
+                mAuth.createUserWithEmailAndPassword(
+                    email.text.toString().trim(),
+                    password.text.toString().trim()
+                )
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            firebaseUserID = mAuth.currentUser!!.uid
 
-                                val chatUser = ChatUser(firebaseUserID, username.text.toString().trim(), search = username.text.toString().trim())
+                            val chatUser = ChatUser(
+                                firebaseUserID,
+                                username.text.toString().trim(),
+                                search = username.text.toString().trim()
+                            )
 
-                                addUserToFirestore(chatUser)
+                            addUserToFirestore(chatUser)
 
 
-                                /*val userHashMap = HashMap<String, Any>()
-                                userHashMap["uid"] = firebaseUserID
-                                userHashMap["username"] = username.text.toString().trim()
-                                userHashMap["profile"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/profile_image.png?alt=media&token=6e7f78cd-df94-4b29-9304-17cb586e57ef"
-                                userHashMap["cover"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/linear_green_cover.png?alt=media&token=bdf5ffe1-3171-4b09-a3af-3a6e201e23f4"
-                                userHashMap["status"] = "offline"
-                                userHashMap["search"] = username.text.toString().trim() //  username.toLowerCase fungerade ej så jag testade denna
-                                //userHashMap["facebook"] = "https://m.facebook.com"
-                                //userHashMap["instagram"] = "https://m.instagram.com"
-                                //userHashMap["website"] = "https://www.google.com"
+                            /*val userHashMap = HashMap<String, Any>()
+                            userHashMap["uid"] = firebaseUserID
+                            userHashMap["username"] = username.text.toString().trim()
+                            userHashMap["profile"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/profile_image.png?alt=media&token=6e7f78cd-df94-4b29-9304-17cb586e57ef"
+                            userHashMap["cover"] = "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/linear_green_cover.png?alt=media&token=bdf5ffe1-3171-4b09-a3af-3a6e201e23f4"
+                            userHashMap["status"] = "offline"
+                            userHashMap["search"] = username.text.toString().trim() //  username.toLowerCase fungerade ej så jag testade denna
+                            //userHashMap["facebook"] = "https://m.facebook.com"
+                            //userHashMap["instagram"] = "https://m.instagram.com"
+                            //userHashMap["website"] = "https://www.google.com"
 */
 /*                                refUsers.updateChildren(userHashMap)
                                         .addOnCompleteListener { task ->
@@ -91,30 +98,24 @@ class RegisterActivity : AppCompatActivity() {
                                 Toast.makeText(this@RegisterActivity, "Error Message: " + task.exception!!.message.toString(), Toast.LENGTH_LONG).show()
                             }*/
 
-
-                            }
-
                         }
+                    }
             }
         }
     }
 
     private fun addUserToFirestore(it: ChatUser) {
         val db = Firebase.firestore
-
         db.collection("users").document(it.uid).set(it)
-                .addOnSuccessListener {
-                    logMaker("successful to add user to DB")
-
-                }
-                .addOnFailureListener {
-                    logMaker("failed to add a user.$it")
-                }
+            .addOnSuccessListener {
+                logMaker("successful to add user to DB")
+            }
+            .addOnFailureListener {
+                logMaker("failed to add a user.$it")
+            }
 
         startMainActivity()
     }
-
-
 
     private fun startMainActivity() {
         val intent = Intent(this@RegisterActivity, MainActivity::class.java)

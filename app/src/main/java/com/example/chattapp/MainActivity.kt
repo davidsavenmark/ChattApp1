@@ -10,65 +10,39 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.example.chattapp.Fragments.ChatsFragment
-import com.example.chattapp.Fragments.FriendslistFragment
-import com.example.chattapp.Fragments.SearchFragment
-import com.example.chattapp.Fragments.SettingsFragment
-import com.example.chattapp.ModelClasses.Users
+import com.example.chattapp.fragments.FriendsListFragment
+import com.example.chattapp.fragments.SearchFragment
+import com.example.chattapp.fragments.SettingsFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.user_search_item_layout.*
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar_main))
 
-        var firebaseUser = FirebaseAuth.getInstance().currentUser
-        var refUsers =
-            FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
+        //var firebaseUser = FirebaseAuth.getInstance().currentUser
+        //var refUsers =
+            //FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
-        supportActionBar!!.title = ""
         tool_bar_title.text = "${FirebaseAuth.getInstance().currentUser?.email}"
         setSupportActionBar(toolbar)
+        supportActionBar!!.title = ""
 
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
 
-
-        viewPagerAdapter.addFragment(FriendslistFragment(), "Friends")
-        viewPagerAdapter.addFragment(ChatsFragment(), "Chats")
+        viewPagerAdapter.addFragment(FriendsListFragment(), "Chats")
         viewPagerAdapter.addFragment(SearchFragment(), "Search")
         viewPagerAdapter.addFragment(SettingsFragment(), "Settings")
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
-
-        /*refUsers!!.addValueEventListener(object : ValueEventListener{
-                    if (p0.exists())
-                    {
-                        val user: Users? = p0.getValue(Users::class.java)
-
-                        username.text = user!!.getUserName()
-                        Picasso.get().load(user.getProfile()).placeholder(R.drawable.ic_profile).into(profile_image)
-
-                    }
-
-
-        })
-
-         */
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -98,37 +72,26 @@ class MainActivity : AppCompatActivity() {
 
     internal class ViewPagerAdapter(fragmentManager: FragmentManager) :
         FragmentPagerAdapter(fragmentManager) {
-        private val fragments: ArrayList<Fragment>
-        private val titles: ArrayList<String>
 
-        init {
-            fragments = ArrayList<Fragment>()
-            titles = ArrayList<String>()
-
-        }
+        private val fragments: ArrayList<Fragment> = ArrayList<Fragment>()
+        private val titles: ArrayList<String> = ArrayList<String>()
 
         override fun getItem(position: Int): Fragment {
-
             return fragments[position]
         }
 
         override fun getCount(): Int {
-
             return fragments.size
-
-
-        }
-
-        fun addFragment(fragment: Fragment, title: String) {
-            fragments.add(fragment)
-            titles.add(title)
         }
 
         override fun getPageTitle(i: Int): CharSequence? {
             return titles[i]
         }
 
+        fun addFragment(fragment: Fragment, title: String) {
+            fragments.add(fragment)
+            titles.add(title)
+        }
     }
-
 }
 

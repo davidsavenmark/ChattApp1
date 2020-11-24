@@ -1,25 +1,25 @@
-package com.example.chattapp.Fragments
+package com.example.chattapp.fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chattapp.AdapterClasses.UserAdapter
-import com.example.chattapp.ModelClasses.Users
 import com.example.chattapp.R
+import com.example.chattapp.adapter.UserAdapter
+import com.example.chattapp.model.Users
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,18 +34,17 @@ private const val ARG_PARAM2 = "param2"
 class SearchFragment : Fragment() {
 
     private var userAdapter: UserAdapter? = null
-    private var mUsers: List<Users>? = null
+    private var userList = mutableListOf<Users>()
     private var recyclerView: RecyclerView? = null
     private var searchEditText: EditText? = null
-
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var userRef: CollectionReference
+    private var userSearchResultList = mutableListOf<Users>()
+    private lateinit var firebaseUserID: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
     }
 
@@ -62,142 +61,119 @@ class SearchFragment : Fragment() {
 
         searchEditText = view.findViewById(R.id.searchUsersET)
 
-
-
-        mUsers = ArrayList()
+        initUserDataBase()
         retrieveAllUsers()
 
 
-
-        searchEditText!!.addTextChangedListener(object : TextWatcher{
+        searchEditText!!.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(cs: CharSequence?, start: Int, before: Int, count: Int) {
-
-                searchForUsers(cs.toString().toLowerCase())
-
+                searchForUsers(cs.toString().trim())
             }
 
             override fun afterTextChanged(s: Editable?) {
 
             }
-
-
-
-
         })
 
         return view
     }
 
-    private fun retrieveAllUsers()
+    /*Function initUserDataBase() to initial the users' information in the database */
+    private fun initUserDataBase() {
+        val db = Firebase.firestore
+        userRef = db.collection("users")
+        firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
+    }
+/*Function retrieveAllUsers() to get the userlist*/
+    private fun retrieveAllUsers() {
 
-    {
+        userRef.get().addOnSuccessListener { result ->
+            userList.clear()
+            for (document in result) {
 
-        val firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
+                val it = document.data["username"] as String
+                /*get the item's uid as id*/
+                val id = document.data["uid"] as String
+                /*excluding the currentUser, do not add the current user's username on the list*/
+                if (firebaseUserID != id) {
+                    userList.add(Users(username = it, uid = id))
+                    logMaker("UserName: $it")
+                }
 
-        val refUsers = FirebaseDatabase.getInstance().reference.child("Users")
+            }
+            /*Sort the name list by alphabet!*/
+            userList.sortBy { it.username }
 
-        refUsers.addValueEventListener(object : ValueEventListener
+            if (recyclerView!!.adapter != null) {
+                val temp = recyclerView!!.adapter as UserAdapter
+                temp.updateDataList(userList)
+                recyclerView!!.scrollToPosition(temp.itemCount - 1)
+            }
+        }
+            .addOnFailureListener { exception ->
+                Log.d("TAG", "Error getting documents: ", exception)
+            }
 
-        {
-            override fun onDataChange(p0: DataSnapshot)
-            {
-                (mUsers as ArrayList<Users>).clear()
-                if (searchEditText!!.text.toString() == "")
+        userAdapter = UserAdapter(userList, itemUserListener)
+        recyclerView!!.adapter = userAdapter
 
-                {
-                    for (snapshot in p0.children)
-                    {
-                        val user: Users? = snapshot.getValue(Users::class.java)
-                        if (!(user!!.getUID()).equals(firebaseUserID))
-                        {
 
-                            (mUsers as ArrayList<Users>).add(user)
-                        }                                                           
+    }
+
+    private fun logMaker(text: String) {
+        Log.d("ChatApp", text)
+    }
+
+    /*Search the users by the name!*/
+    private fun searchForUsers(input: String) {
+        if (input == "") {
+            userAdapter?.updateDataList(userList)
+            return
+        }
+        userSearchResultList.clear()
+        userList.forEach {
+            if (it.username.contains(input, true)) {
+                userSearchResultList.add(it)
+            }
+        }
+        if (userSearchResultList.isEmpty()) {
+            return
+        }
+        userAdapter?.updateDataList(userSearchResultList)
+    }
+
+    /*!!!!!!!Add a friend without his(her)permission!!!!!! If you press "OK", add him(her) default. To be continued!*/
+    private var itemUserListener: (Users) -> Unit = {
+        //Toast.makeText(itemView.context, "Username is ${user.username}", Toast.LENGTH_SHORT).show()
+        AlertDialog.Builder(context).apply {
+            setTitle("Add a friend?")
+            setMessage("Do you want to add ${it.username} as a friend?")
+            setCancelable(false)
+            setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
+                /*Add the friend to the current user's friendsCollection.*/
+                val currentUsersFriendsCollection =
+                    userRef.document(firebaseUserID)
+                        .collection("friendsCollection")
+                        .document(it.uid)
+                val newFriend = Users(uid = it.uid, username = it.username)
+                currentUsersFriendsCollection.set(newFriend).addOnSuccessListener {
+                    logMaker("successful to add user to DB")
+
+                }
+                    .addOnFailureListener {
+                        logMaker("failed to add a user.$it")
                     }
-                    userAdapter = UserAdapter(context!!, mUsers!!, false)
-                    recyclerView!!.adapter = userAdapter
-
-
-                }
-
-
             }
-
-            override fun onCancelled(p0: DatabaseError)
-
-
-            {
-
+            setNegativeButton("No") { dialogInterface: DialogInterface, i: Int ->
+                //nothing to do
             }
-
-        })
-
-
-
+            show()
+        }
     }
 
-    private fun searchForUsers (str: String)
-    {
+    //To do: If the person has already been your friend, do not show him(her) in the list.
 
-        val firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
-
-        val queryfUsers = FirebaseDatabase.getInstance().reference
-            .child("Users").orderByChild("search")
-            .startAt(str)
-            .endAt(str + "\uf8ff")
-
-        queryfUsers.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(p0: DataSnapshot) {
-                (mUsers as ArrayList<Users>).clear()
-                for (snapshot in p0.children)
-                {
-                    val user: Users? = snapshot.getValue(Users::class.java)
-                    if (!(user!!.getUID()).equals(firebaseUserID))
-                    {
-                      (mUsers as ArrayList<Users>).add(user)
-                    }
-                }
-                 userAdapter = UserAdapter(context!!, mUsers!!, false)
-                 recyclerView!!.adapter = userAdapter
-
-
-
-
-
-
-
-
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SearchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
