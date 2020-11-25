@@ -68,6 +68,7 @@ class SendMessageActivity : AppCompatActivity() {
             "$sendUid-$receiverUid"
         }
     }
+    //
 
     private fun getChatListData() {
         messageRef.get().addOnSuccessListener { result ->
