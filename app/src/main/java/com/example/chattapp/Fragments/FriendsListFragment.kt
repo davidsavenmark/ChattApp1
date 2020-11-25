@@ -53,6 +53,7 @@ class FriendsListFragment : Fragment() {
         val layoutManager = LinearLayoutManager(requireContext())
         friends_recyclerView.layoutManager = layoutManager
 
+        //The variable "listener" is a parameter of "FriendAdapter"
         val listener: (ChatUser) -> Unit = {
             val intent:Intent = Intent(requireContext(), SendMessageActivity::class.java)
             intent.putExtra("FRIENDUID",it.uid)

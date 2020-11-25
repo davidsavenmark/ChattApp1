@@ -60,7 +60,8 @@ class SendMessageActivity : AppCompatActivity() {
             .collection("messages").document(path)
             .collection("ChatLine")
     }
-//Create the same list of chat recorder between two persons, give it to the same path in document.
+
+    //Create the same list of chat recorder between two persons, give it to the same path in document.
     private fun getMessageDocumentPath(sendUid: String, receiverUid: String): String {
         return if (sendUid > receiverUid) {
             "$receiverUid-$sendUid"
@@ -126,13 +127,14 @@ class SendMessageActivity : AppCompatActivity() {
     private fun logMaker(text: String) {
         Log.d("TAG", text)
     }
-//Update the new sending messages in messageList.If Added, document changes.MODIFIED,REMOVED can we add in the future.
-    private fun realTimeUpdateMessage(){
+
+    //Update the new sending messages in messageList.If Added, document changes.MODIFIED,REMOVED can we add in the future.
+    private fun realTimeUpdateMessage() {
         messageRef.addSnapshotListener { snapshots, e ->
             if (e != null) {
                 return@addSnapshotListener
             }
-
+//listen for realtime updates.
             for (dc in snapshots!!.documentChanges) {
                 when (dc.type) {
                     DocumentChange.Type.ADDED -> {

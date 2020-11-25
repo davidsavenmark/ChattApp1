@@ -81,24 +81,26 @@ class SearchFragment : Fragment() {
         return view
     }
 
-    /*Function initUserDataBase() to initial the users' information in the database */
+    /*Function initUserDataBase() to initial the users' information in the database,read in information from Authentication to Firestore*/
     private fun initUserDataBase() {
         val db = Firebase.firestore
         userRef = db.collection("users")
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
     }
-/*Function retrieveAllUsers() to get the userlist*/
+
+    /*Function retrieveAllUsers() to get the userlist*/
     private fun retrieveAllUsers() {
 
         userRef.get().addOnSuccessListener { result ->
             userList.clear()
             for (document in result) {
-
+                /*get the item's username*/
                 val it = document.data["username"] as String
                 /*get the item's uid as id*/
                 val id = document.data["uid"] as String
                 /*excluding the currentUser, do not add the current user's username on the list*/
                 if (firebaseUserID != id) {
+                    //Add User's two fields: username and uid
                     userList.add(Users(username = it, uid = id))
                     logMaker("UserName: $it")
                 }
@@ -130,11 +132,13 @@ class SearchFragment : Fragment() {
     /*Search the users by the name!*/
     private fun searchForUsers(input: String) {
         if (input == "") {
+            //"updateDataList" is a method in class - UserAdapter
             userAdapter?.updateDataList(userList)
             return
         }
         userSearchResultList.clear()
         userList.forEach {
+            // ignore uper or lower
             if (it.username.contains(input, true)) {
                 userSearchResultList.add(it)
             }
@@ -145,7 +149,8 @@ class SearchFragment : Fragment() {
         userAdapter?.updateDataList(userSearchResultList)
     }
 
-    /*!!!!!!!Add a friend without his(her)permission!!!!!! If you press "OK", add him(her) default. To be continued!*/
+    /*!!!!!!!Add a friend without his(her)permission!!!!!! If you press "OK", add him(her) directly. To be continued!*/
+    //The variable "itemUserListener" is a parameter of UserAdapter
     private var itemUserListener: (Users) -> Unit = {
         //Toast.makeText(itemView.context, "Username is ${user.username}", Toast.LENGTH_SHORT).show()
         AlertDialog.Builder(context).apply {
@@ -161,7 +166,6 @@ class SearchFragment : Fragment() {
                 val newFriend = Users(uid = it.uid, username = it.username)
                 currentUsersFriendsCollection.set(newFriend).addOnSuccessListener {
                     logMaker("successful to add user to DB")
-
                 }
                     .addOnFailureListener {
                         logMaker("failed to add a user.$it")
@@ -174,6 +178,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    //To do: If the person has already been your friend, do not show him(her) in the list.
+    //To do: If the person has already been your friend, do not show him(her) in the list.To be continued!
 
 }

@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -19,8 +20,11 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.chattapp.R
+import com.example.chattapp.model.ChatUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -40,6 +44,8 @@ class SettingsFragment : Fragment() {
     private var socialChecker: String? = ""
     private lateinit var mSelected: List<Uri>
     private lateinit var profileImageUri: Uri
+    val db = Firebase.firestore
+    private lateinit var userRef: CollectionReference
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -76,6 +82,7 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
         return view
     }
@@ -87,11 +94,24 @@ class SettingsFragment : Fragment() {
         firebaseUser = FirebaseAuth.getInstance().currentUser
         storage = Firebase.storage
         val storageRef = storage.reference
+        //fix the show of the username, OBS!!!!Just email there.
+        username_settings.text =firebaseUser!!.email.toString()
+        userRef = db.collection("users")
+        userRef.document(firebaseUser!!.uid).get()
+            .addOnSuccessListener { result ->
+                val profile = result["profile"] as String
+                if (profile != ChatUser.profileDefault) {
+                    showImage(profile.toUri(), profile_image_settings)
+                }
+            }
+            .addOnFailureListener { exception ->
 
-        val uri =
+            }
+
+        /*val uri =
             "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/images%2F2621530?alt=media&token=6ad6bb38-8a13-4825-841c-ff7a91123b04"
         showImage(uri.toUri(), profile_image_settings)
-
+*/
         update_button.setOnClickListener {
             val file: Uri = profileImageUri
             val riversRef = storageRef.child("images/${file.lastPathSegment}")
@@ -113,6 +133,23 @@ class SettingsFragment : Fragment() {
                     if (task.isSuccessful) {
                         val downloadUri = task.result
                         logMaker("downloadUri:($downloadUri)")
+//Update information of current user, profile which comes from Storage, pictures uri.OBS!!!downloadUri is not a String.
+                        userRef.document("${firebaseUser!!.uid}")
+                            .update("profile", downloadUri.toString())
+                            .addOnSuccessListener {
+                                Log.d(
+                                    "TAG!!!",
+                                    "DocumentSnapshot successfully updated!"
+                                )
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w(
+                                    "TAG!!!",
+                                    "Error updating document",
+                                    e
+                                )
+                            }
+
                     }
                 }
         }
@@ -182,7 +219,7 @@ class SettingsFragment : Fragment() {
         }
     }*/
 
-
+    //"showImage" function : To load the uri in the position - imageView.
     private fun showImage(uri: Uri, imageView: ImageView) {
         Glide.with(requireContext())
             .asBitmap()
