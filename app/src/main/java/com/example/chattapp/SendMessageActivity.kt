@@ -14,6 +14,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_send_message.*
 
@@ -38,7 +39,10 @@ class SendMessageActivity : AppCompatActivity() {
         initListener()
         initRecyclerView()
         realTimeUpdateMessage()
+
     }
+
+
 
     override fun onStart() {
         super.onStart()
@@ -56,10 +60,9 @@ class SendMessageActivity : AppCompatActivity() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
         val path = getMessageDocumentPath(firebaseUserID, friendUid)
-        messageRef = db
-            .collection("messages").document(path)
-            .collection("ChatLine")
+        messageRef = db.collection("messages").document(path) .collection("ChatLine")
     }
+
 //Create the same list of chat recorder between two persons, give it to the same path in document.
     private fun getMessageDocumentPath(sendUid: String, receiverUid: String): String {
         return if (sendUid > receiverUid) {
@@ -67,6 +70,7 @@ class SendMessageActivity : AppCompatActivity() {
         } else {
             "$sendUid-$receiverUid"
         }
+
     }
     //
 
@@ -128,7 +132,9 @@ class SendMessageActivity : AppCompatActivity() {
         Log.d("TAG", text)
     }
 //Update the new sending messages in messageList.If Added, document changes.MODIFIED,REMOVED can we add in the future.
+
     private fun realTimeUpdateMessage(){
+        //med snapshot så får man uppdatteringar varje gång det sker en ändring
         messageRef.addSnapshotListener { snapshots, e ->
             if (e != null) {
                 return@addSnapshotListener
@@ -139,6 +145,7 @@ class SendMessageActivity : AppCompatActivity() {
                     DocumentChange.Type.ADDED -> {
                         val text = dc.document.data["text_message"] as String
                         val id = dc.document.data["senderUid"] as String
+                        //hämar informationen från chatten
                         //get the chat data.
                         messageList.add(ChatLine(text, id))
                         if (recycler_view_chats.adapter != null) {

@@ -109,6 +109,7 @@ class RegisterActivity : AppCompatActivity() {
         db.collection("users").document(it.uid).set(it)
             .addOnSuccessListener {
                 logMaker("successful to add user to DB")
+                // startMain
             }
             .addOnFailureListener {
                 logMaker("failed to add a user.$it")

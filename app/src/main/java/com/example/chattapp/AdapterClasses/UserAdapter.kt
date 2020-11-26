@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chattapp.ModelClasses.Users
 import com.example.chattapp.R
-import com.example.chattapp.data.ChatUser
+//import com.example.chattapp.data.ChatUser
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
