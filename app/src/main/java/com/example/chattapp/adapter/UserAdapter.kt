@@ -1,13 +1,16 @@
 package com.example.chattapp.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.chattapp.R
 import com.example.chattapp.model.Users
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -40,10 +43,7 @@ class UserAdapter(
         holder.apply {
             userNameTxt.text = user.username
             if (user.profile != "") {
-                Picasso.get()
-                    .load(user.profile)
-                    //.placeholder(R.drawable.ic_profile)
-                    .into(profileImageView)
+                showImage(user.profile.toUri(), profileImageView)
             }
             //just to send the listener out to SearchFragment.kt
             userNameTxt.setOnClickListener {
@@ -57,5 +57,13 @@ class UserAdapter(
     fun updateDataList(list: MutableList<Users>) {
         userList = list
         notifyDataSetChanged()
+    }
+
+    private fun showImage(uri: Uri, imageView: ImageView) {
+        Glide.with(imageView.context)
+            .asBitmap()
+            .load(uri)
+            .placeholder(R.drawable.ic_profile)
+            .into(imageView)
     }
 }

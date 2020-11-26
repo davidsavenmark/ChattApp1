@@ -1,12 +1,12 @@
 package com.example.chattapp.model
 
 data class ChatUser(
-        var uid: String = "",
-        var username: String = "",
-        var profile: String = profileDefault,
-        var cover: String = coverDefault,
-        var status: String = "offline",
-        var search: String = ""
+    var uid: String = "",
+    var username: String = "",
+    var profile: String = profileDefault,
+    var cover: String = coverDefault,
+    var status: String = "offline",
+    var search: String = ""
 ) {
     companion object {
         const val profileDefault =

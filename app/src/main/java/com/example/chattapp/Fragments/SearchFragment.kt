@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chattapp.R
 import com.example.chattapp.adapter.UserAdapter
+import com.example.chattapp.model.Friend
 import com.example.chattapp.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -98,10 +99,12 @@ class SearchFragment : Fragment() {
                 val it = document.data["username"] as String
                 /*get the item's uid as id*/
                 val id = document.data["uid"] as String
+                /*get the item's imageView as profile*/
+                val profile = document.data["profile"] as String
                 /*excluding the currentUser, do not add the current user's username on the list*/
                 if (firebaseUserID != id) {
                     //Add User's two fields: username and uid
-                    userList.add(Users(username = it, uid = id))
+                    userList.add(Users(username = it, uid = id, profile = profile))
                     logMaker("UserName: $it")
                 }
 
@@ -163,7 +166,7 @@ class SearchFragment : Fragment() {
                     userRef.document(firebaseUserID)
                         .collection("friendsCollection")
                         .document(it.uid)
-                val newFriend = Users(uid = it.uid, username = it.username)
+                val newFriend = Friend(uid = it.uid)
                 currentUsersFriendsCollection.set(newFriend).addOnSuccessListener {
                     logMaker("successful to add user to DB")
                 }

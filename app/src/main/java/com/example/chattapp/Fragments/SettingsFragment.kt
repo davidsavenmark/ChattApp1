@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -95,7 +94,7 @@ class SettingsFragment : Fragment() {
         storage = Firebase.storage
         val storageRef = storage.reference
         //fix the show of the username, OBS!!!!Just email there.
-        username_settings.text =firebaseUser!!.email.toString()
+        username_settings.text = firebaseUser!!.email.toString()
         userRef = db.collection("users")
         userRef.document(firebaseUser!!.uid).get()
             .addOnSuccessListener { result ->
@@ -107,11 +106,7 @@ class SettingsFragment : Fragment() {
             .addOnFailureListener { exception ->
 
             }
-
-        /*val uri =
-            "https://firebasestorage.googleapis.com/v0/b/chattapp-666b6.appspot.com/o/images%2F2621530?alt=media&token=6ad6bb38-8a13-4825-841c-ff7a91123b04"
-        showImage(uri.toUri(), profile_image_settings)
-*/
+        //Add a button "update", if click it,upload the picture you choose in local mobil to Storage, path is /images.
         update_button.setOnClickListener {
             val file: Uri = profileImageUri
             val riversRef = storageRef.child("images/${file.lastPathSegment}")
@@ -120,21 +115,26 @@ class SettingsFragment : Fragment() {
             uploadTask
                 .addOnFailureListener {
                     logMaker("Upload failed!($file)")
-                }.addOnSuccessListener { taskSnapshot ->
+                }
+                .addOnSuccessListener { taskSnapshot ->
                     logMaker("Upload success!($file),${taskSnapshot.uploadSessionUri}")
-                }.continueWithTask { task ->
+                }
+                .continueWithTask { task ->
                     if (!task.isSuccessful) {
                         task.exception?.let {
                             throw it
                         }
                     }
                     riversRef.downloadUrl
-                }.addOnCompleteListener { task ->
+                }
+                //If the upload is successful, give downloadUri.
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val downloadUri = task.result
                         logMaker("downloadUri:($downloadUri)")
-//Update information of current user, profile which comes from Storage, pictures uri.OBS!!!downloadUri is not a String.
-                        userRef.document("${firebaseUser!!.uid}")
+
+//Update information of current user in firestore, profile which comes from Storage, pictures uri.OBS!!!downloadUri is not a String.Put downloadUri in the profile field.
+                        userRef.document(firebaseUser!!.uid)
                             .update("profile", downloadUri.toString())
                             .addOnSuccessListener {
                                 Log.d(
@@ -142,45 +142,21 @@ class SettingsFragment : Fragment() {
                                     "DocumentSnapshot successfully updated!"
                                 )
                             }
-                            .addOnFailureListener { e ->
+                            .addOnFailureListener { exception ->
                                 Log.w(
                                     "TAG!!!",
                                     "Error updating document",
-                                    e
+                                    exception
                                 )
                             }
 
                     }
                 }
         }
-/*
-        usersRefrence =
-            FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
-        storageRef = FirebaseStorage.getInstance().reference.child("User Images")
 
-
-        usersRefrence!!.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                if (p0.exists()) {
-                    val user: Users? = p0.getValue(Users::class.java)
-
-                    if (context != null) {
-                        username_settings.text = user!!.getUserName()
-                        if (user.getProfile() != "") {
-                            showImage(user.getProfile()!!.toUri(), profile_image_settings)
-                        }
-                        if (user.getCover() != "") {
-                            showImage(user.getCover()!!.toUri(), cover_image_settings)
-                        }
-                    }
-                }
-            }
-            override fun onCancelled(p0: DatabaseError) {}
-        })
-*/
-
+//Profile management, when click on the picture, first judge is the app have the permission to visit the local pictures. Request for permission granted.
         profile_image_settings.setOnClickListener {
-            //check if you have the permission to get the picture from local mobile, if no, ask for request,if yes, call Matisse.
+            //check if you have the permission to get the picture from local mobile, if no, ask for request,if yes, call Matisse.Just the first time to start needs this,after that,no need.
             if (ContextCompat.checkSelfPermission(
                     requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE
                 ) !=
@@ -200,24 +176,6 @@ class SettingsFragment : Fragment() {
 
         }
     }
-/*        cover_image_settings.setOnClickListener {
-            coverChecker = "cover"
-            pickImage()
-        }
-
-        set_facebook.setOnClickListener {
-            socialChecker = "facebook"
-            setSocialLinks()
-        }
-        set_instagram.setOnClickListener {
-            socialChecker = "instagram"
-            setSocialLinks()
-        }
-        set_website.setOnClickListener {
-            socialChecker = "website"
-            setSocialLinks()
-        }
-    }*/
 
     //"showImage" function : To load the uri in the position - imageView.
     private fun showImage(uri: Uri, imageView: ImageView) {
@@ -227,7 +185,7 @@ class SettingsFragment : Fragment() {
             .placeholder(R.drawable.ic_profile)
             .into(imageView)
     }
-
+//Call the function Matisse, a TTP library.
     private fun callMatisse() {
         Matisse.from(this@SettingsFragment)
             .choose(MimeType.ofImage())

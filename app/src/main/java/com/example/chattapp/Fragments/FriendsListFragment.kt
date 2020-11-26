@@ -10,24 +10,24 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.chattapp.MainActivity
 import com.example.chattapp.R
 import com.example.chattapp.SendMessageActivity
 import com.example.chattapp.adapter.FriendAdapter
 import com.example.chattapp.model.ChatUser
+import com.example.chattapp.model.Friend
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_friendslist.*
 
 class FriendsListFragment : Fragment() {
 
-    private lateinit var db: FirebaseFirestore
+    private lateinit var userRef: CollectionReference
     private lateinit var friendRef: CollectionReference
-    var friendsList = mutableListOf<ChatUser>()
     private lateinit var firebaseUserID: String
+    var friendsList = mutableListOf<ChatUser>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,14 +38,20 @@ class FriendsListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initUserDataBase()
         initFriendDataBase()
         initFriendRecyclerView()
         getFriendListData()
     }
 
-    private fun initFriendDataBase() {
-        db = Firebase.firestore
+    private fun initUserDataBase() {
+        val db = Firebase.firestore
+        userRef = db.collection("users")
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
+    }
+
+    private fun initFriendDataBase() {
+        val db = Firebase.firestore
         friendRef = db.collection("users").document(firebaseUserID).collection("friendsCollection")
     }
 
@@ -55,8 +61,8 @@ class FriendsListFragment : Fragment() {
 
         //The variable "listener" is a parameter of "FriendAdapter"
         val listener: (ChatUser) -> Unit = {
-            val intent:Intent = Intent(requireContext(), SendMessageActivity::class.java)
-            intent.putExtra("FRIENDUID",it.uid)
+            val intent: Intent = Intent(requireContext(), SendMessageActivity::class.java)
+            intent.putExtra("FRIENDUID", it.uid)
             intent.putExtra("FRIENDUSERNAME",it.username)
             //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -74,18 +80,30 @@ class FriendsListFragment : Fragment() {
     }
 
     private fun getFriendListData() {
-        friendRef.get()
-            .addOnSuccessListener { result ->
-                friendsList.clear()
-                for (document in result) {
-                    val id = document.data["uid"] as String
-                    val username = document.data["username"] as String
-                    friendsList.add(ChatUser(id, username))
-                }
-                //sort by name
-                friendsList.sortBy { it.username }
-                refreshRecyclerView()
+        val tempFriendUidList: MutableList<Friend> = mutableListOf()
+        friendRef.get().addOnSuccessListener { result ->
+            friendsList.clear()
+            for (document in result) {
+                val id = document.data["uid"] as String
+                tempFriendUidList.add(Friend(id))
             }
+
+            logMaker("HahaFriendList:$tempFriendUidList")
+
+            tempFriendUidList.forEach {
+                val uid = it.uid
+                userRef.document(uid).get().addOnSuccessListener { document ->
+                    val username = document["username"] as String
+                    val profile = document["profile"] as String
+                    friendsList.add(ChatUser(username = username, profile = profile))
+                    logMaker("HahaFriendList:$tempFriendUidList")
+                    //sort by name
+                    friendsList.sortBy { it.username }
+                    refreshRecyclerView()
+                }
+            }
+
+        }
             .addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)
             }
@@ -97,5 +115,9 @@ class FriendsListFragment : Fragment() {
             temp.updateDataList()
             //friends_recyclerView.scrollToPosition(temp.itemCount - 1)
         }
+    }
+
+    private fun logMaker(text: String) {
+        Log.v("ChatApp", text)
     }
 }
