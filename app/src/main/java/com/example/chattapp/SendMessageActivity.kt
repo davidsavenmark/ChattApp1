@@ -123,7 +123,7 @@ class SendMessageActivity : AppCompatActivity() {
             }
 
             val x = messageRef.document("ChatLine${System.currentTimeMillis()}")
-            //Add the information to Firestore from the "send" button.
+            //Add the information to Firestore from the "send" button..
             val chatLine = ChatLine(message, firebaseUserID)
             x.set(chatLine, SetOptions.merge())
                 .addOnSuccessListener { logMaker("DocumentSnapshot successfully written") }
