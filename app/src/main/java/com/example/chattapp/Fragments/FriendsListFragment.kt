@@ -80,6 +80,7 @@ class FriendsListFragment : Fragment() {
     }
 
     private fun getFriendListData() {
+        //Get a temporary frienduidlist, just add Friend(id)
         val tempFriendUidList: MutableList<Friend> = mutableListOf()
         friendRef.get().addOnSuccessListener { result ->
             friendsList.clear()
@@ -91,7 +92,9 @@ class FriendsListFragment : Fragment() {
             logMaker("HahaFriendList:$tempFriendUidList")
 
             tempFriendUidList.forEach {
+                //Get Friend's uid
                 val uid = it.uid
+                // Look for a user in "users" collection whose uid is Friend's uid.Get its username and profile because we add such a ChatUser(OBS!!different members)in friendsList.
                 userRef.document(uid).get().addOnSuccessListener { document ->
                     val username = document["username"] as String
                     val profile = document["profile"] as String
