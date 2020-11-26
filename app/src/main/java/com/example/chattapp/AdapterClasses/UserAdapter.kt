@@ -1,4 +1,4 @@
-package com.example.chattapp.adapter
+package com.example.chattapp.AdapterClasses
 
 import android.net.Uri
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chattapp.R
-import com.example.chattapp.model.Users
+import com.example.chattapp.ModelClasses.Users
 import de.hdodenhof.circleimageview.CircleImageView
 
 

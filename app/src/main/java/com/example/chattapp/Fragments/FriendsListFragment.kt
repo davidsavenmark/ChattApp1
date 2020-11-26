@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chattapp.R
 import com.example.chattapp.SendMessageActivity
-import com.example.chattapp.adapter.FriendAdapter
-import com.example.chattapp.model.ChatUser
-import com.example.chattapp.model.Friend
+import com.example.chattapp.AdapterClasses.FriendAdapter
+import com.example.chattapp.ModelClasses.ChatUser
+import com.example.chattapp.ModelClasses.Friend
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore

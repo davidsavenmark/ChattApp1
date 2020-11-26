@@ -14,9 +14,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chattapp.R
-import com.example.chattapp.adapter.UserAdapter
-import com.example.chattapp.model.Friend
-import com.example.chattapp.model.Users
+import com.example.chattapp.AdapterClasses.UserAdapter
+import com.example.chattapp.ModelClasses.Friend
+import com.example.chattapp.ModelClasses.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
@@ -122,7 +122,7 @@ class SearchFragment : Fragment() {
                 Log.d("TAG", "Error getting documents: ", exception)
             }
 
-        userAdapter = UserAdapter(userList, itemUserListener)
+        userAdapter = UserAdapter(userList, itemUserListener, true)
         recyclerView!!.adapter = userAdapter
 
 

@@ -1,15 +1,21 @@
 package com.example.chattapp
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.chattapp.adapter.MessageAdapter
-import com.example.chattapp.model.ChatLine
+import com.example.chattapp.AdapterClasses.MessageAdapter
+import com.example.chattapp.ModelClasses.ChatLine
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.SetOptions
@@ -25,6 +31,8 @@ class SendMessageActivity : AppCompatActivity() {
     private lateinit var friendUid: String
     private lateinit var friendUsername: String
 
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +47,25 @@ class SendMessageActivity : AppCompatActivity() {
         initRecyclerView()
         realTimeUpdateMessage()
     }
+        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar_message_chat)
+    override fun setSupportActionBar(toolbar: Toolbar?) {
+        super.setSupportActionBar(toolbar)
+        supportActionBar!!.title = ""
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar?.setNavigationOnClickListener { val intent = Intent(this@SendMessageActivity, WelcomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
+
+
+        }
+
+
+
+    }
+
+
+
 
     override fun onStart() {
         super.onStart()
@@ -156,8 +183,55 @@ class SendMessageActivity : AppCompatActivity() {
                     )
                     DocumentChange.Type.REMOVED -> Log.d("TAG", "Removed city: ${dc.document.data}")
                     else -> Log.d("TAG", "Nothing happened!!")
+
+
                 }
             }
         }
+
     }
+
+    private fun seenMessage(userId: String)
+    {
+        var seenListener: ValueEventListener? = null
+
+        val reference = FirebaseDatabase.getInstance().reference.child("Chats")
+
+        seenListener = reference!!.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot)
+            {
+                for (dataSnapshot in p0.children)
+                {
+                    val chat = dataSnapshot.getValue(SendMessageActivity::class.java)
+
+                    if (chat!!.getReceiver().equals(firebaseUserID!!) && chat!!getSender(firebaseUserID).equals(userId))
+                    {
+                        val hashMap = HashMap<String, Any>()
+                        hashMap["isseen"] = true
+                        dataSnapshot.ref.updateChildren(hashMap)
+                    }
+                }
+
+            }
+
+
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+
+        })
+
+
+
+
+
+
+
 }
+
+
+
+
+

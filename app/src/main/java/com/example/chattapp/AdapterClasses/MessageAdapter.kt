@@ -1,4 +1,4 @@
-package com.example.chattapp.adapter
+package com.example.chattapp.AdapterClasses
 
 
 import android.view.Gravity
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chattapp.R
-import com.example.chattapp.model.ChatLine
+import com.example.chattapp.ModelClasses.ChatLine
 
 
 class MessageAdapter(

@@ -19,7 +19,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.chattapp.R
-import com.example.chattapp.model.ChatUser
+import com.example.chattapp.ModelClasses.ChatUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference

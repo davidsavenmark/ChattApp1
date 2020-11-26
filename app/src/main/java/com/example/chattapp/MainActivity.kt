@@ -16,6 +16,7 @@ import com.example.chattapp.fragments.SettingsFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -24,9 +25,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //var firebaseUser = FirebaseAuth.getInstance().currentUser
-        //var refUsers =
-            //FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
+        var firebaseUser = FirebaseAuth.getInstance().currentUser
+        var refUsers = FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
         tool_bar_title.text = "${FirebaseAuth.getInstance().currentUser?.email}"

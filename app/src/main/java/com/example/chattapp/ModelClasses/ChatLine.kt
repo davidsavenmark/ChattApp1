@@ -1,4 +1,4 @@
-package com.example.chattapp.model
+package com.example.chattapp.ModelClasses
 
 
 data class ChatLine(var text_message: String, var senderUid: String)
