@@ -1,15 +1,18 @@
 package com.example.chattapp
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chattapp.adapter.MessageAdapter
 import com.example.chattapp.model.ChatLine
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.SetOptions
@@ -24,6 +27,8 @@ class SendMessageActivity : AppCompatActivity() {
     private lateinit var firebaseUserID: String
     private lateinit var friendUid: String
     private lateinit var friendUsername: String
+    var reference: DatabaseReference? = null
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +43,23 @@ class SendMessageActivity : AppCompatActivity() {
         initListener()
         initRecyclerView()
         realTimeUpdateMessage()
+
+
+
+        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar_message_chat)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = ""
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
+            val intent = Intent(this@SendMessageActivity, WelcomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
+        }
+
+        seenMessage(userIdVisit)
+
+
     }
 
     override fun onStart() {
@@ -159,5 +181,44 @@ class SendMessageActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+
+
+    var seenListner: ValueEventListener? = null
+
+    private fun seenMessage(userId: String)
+    {
+        val reference = FirebaseDatabase.getInstance().reference.child("Chats")
+
+        seenListner = reference!!.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot)
+            {
+                for (dataSnapshot in p0.children)
+                {
+                    val chat = dataSnapshot.getValue(Chat::class.java)
+
+                    if (chat!!.getReceiver().equals(firebaseUser!!.uid) && chat!!getSender().equals(userId))
+                    {
+                        val hashMap = HashMap<String, Any>()
+                        hashMap["isseen"] = true
+                        dataSnapshot.ref.updateChildren(hashMap)
+                    }
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+
+        reference!!.removeEventListener(seenListner!!)
     }
 }
