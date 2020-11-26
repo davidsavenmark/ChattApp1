@@ -105,19 +105,23 @@ class ChatsFragment : Fragment()
                         }
 
                     }
-                    userAdapter = com.example.chattapp.AdapterClasses.UserAdapter(context!!(),
-                        (mUsers as ArrayList<com.example.chattapp.ModelClasses.Users>),
-                        true
-                    )
+                    userAdapter = com.example.chattapp.AdapterClasses.UserAdapter.ViewHolder.(context!!())
+                    (mUsers as ArrayList<com.example.chattapp.ModelClasses.Users>)
                     recycler_view_chatlist.adapter = userAdapter
 
 
                 }
 
-                 fun onCancelled(p0: DatabaseError) {
+                fun onCancelled(p0: DatabaseError) {
 
                 }
+
+                //userAdapter = com.example.chattapp.AdapterClasses.UserAdapter(context!!(),
+                //                        (mUsers as ArrayList<com.example.chattapp.ModelClasses.Users>),
+                //                        true
 
             })
         }
     }
+
+}

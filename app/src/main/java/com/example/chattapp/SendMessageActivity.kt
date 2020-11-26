@@ -204,7 +204,7 @@ class SendMessageActivity : AppCompatActivity() {
                 {
                     val chat = dataSnapshot.getValue(SendMessageActivity::class.java)
 
-                    if (chat!!.getReceiver().equals(firebaseUserID!!) && chat!!getSender(firebaseUserID).equals(userId))
+                    if (chat!!.getReceiver().equals(firebaseUserID!!) && chat!!getSender(firebaseUserID!!).equals(userId))
                     {
                         val hashMap = HashMap<String, Any>()
                         hashMap["isseen"] = true
