@@ -18,7 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class ChatsFragment : Fragment()
+/*class ChatsFragment : Fragment()
 {
     private var userAdapter: UserAdapter? = null
     private var mUsers: List<Users>? = null
@@ -105,7 +105,7 @@ class ChatsFragment : Fragment()
                         }
 
                     }
-                    userAdapter = com.example.chattapp.AdapterClasses.UserAdapter.ViewHolder.(context!!())
+                    userAdapter = com.example.chattapp.AdapterClasses.UserAdapter.ViewHolder.(this,)
                     (mUsers as ArrayList<com.example.chattapp.ModelClasses.Users>)
                     recycler_view_chatlist.adapter = userAdapter
 
@@ -124,4 +124,6 @@ class ChatsFragment : Fragment()
         }
     }
 
-}
+
+
+ */

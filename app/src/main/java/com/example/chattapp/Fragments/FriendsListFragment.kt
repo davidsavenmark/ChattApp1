@@ -13,20 +13,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chattapp.R
 import com.example.chattapp.SendMessageActivity
 import com.example.chattapp.AdapterClasses.FriendAdapter
+import com.example.chattapp.ModelClasses.ChatLine
 import com.example.chattapp.ModelClasses.ChatUser
 import com.example.chattapp.ModelClasses.Friend
+import com.example.chattapp.ModelClasses.Users
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_friendslist.*
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.NonCancellable.children
 
 class FriendsListFragment : Fragment() {
 
     private lateinit var userRef: CollectionReference
     private lateinit var friendRef: CollectionReference
     private lateinit var firebaseUserID: String
+    private lateinit var friendUid: String
+    private lateinit var db: FirebaseFirestore
     var friendsList = mutableListOf<ChatUser>()
+    private var messageList = mutableListOf<ChatLine>()
+
+    private lateinit var seenListener: ValueEventListener
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -123,4 +137,35 @@ class FriendsListFragment : Fragment() {
     private fun logMaker(text: String) {
         Log.v("ChatApp", text)
     }
+
+    @InternalCoroutinesApi
+
+    private fun seenMessage(userId: String)
+    {
+        var seenListener: ValueEventListener? = null
+
+        val reference = FirebaseDatabase.getInstance().reference.child("Chats")
+
+        seenListener = reference!!.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot)
+            {
+                for (dataSnapshot in p0.children)
+                {
+                    val chat = dataSnapshot.getValue(SendMessageActivity::class.java)
+
+                    if (chat!!.getReceiver().equals(firebaseUserID!!) && chat!!getSender(friendUid!!).equals(userId))
+                    {
+                        val hashMap = HashMap<String, Any>()
+                        hashMap["isseen"] = true
+                        dataSnapshot.ref.updateChildren(hashMap)
+                    }
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+
 }

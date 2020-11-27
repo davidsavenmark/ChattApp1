@@ -191,37 +191,7 @@ class SendMessageActivity : AppCompatActivity() {
 
     }
 
-    private fun seenMessage(userId: String)
-    {
-        var seenListener: ValueEventListener? = null
 
-        val reference = FirebaseDatabase.getInstance().reference.child("Chats")
-
-        seenListener = reference!!.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot)
-            {
-                for (dataSnapshot in p0.children)
-                {
-                    val chat = dataSnapshot.getValue(SendMessageActivity::class.java)
-
-                    if (chat!!.getReceiver().equals(firebaseUserID!!) && chat!!getSender(firebaseUserID!!).equals(userId))
-                    {
-                        val hashMap = HashMap<String, Any>()
-                        hashMap["isseen"] = true
-                        dataSnapshot.ref.updateChildren(hashMap)
-                    }
-                }
-
-            }
-
-
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-
-        })
 
 
 
