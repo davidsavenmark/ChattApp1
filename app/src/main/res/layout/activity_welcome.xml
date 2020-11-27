@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ny_backgrund"
+    android:background="@drawable/background"
     android:orientation="vertical"
     android:gravity="center"
     tools:context=".WelcomeActivity">
@@ -14,7 +14,7 @@
         android:id="@+id/imageView"
         android:layout_width="301dp"
         android:layout_height="256dp"
-        app:srcCompat="@drawable/eea96a4bf47ff4d11964e3d66959d273" />
+        app:srcCompat="@drawable/miao_logo" />
 
     <TextView
         android:layout_width="wrap_content"
