@@ -1,48 +1,63 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/welcome"
+    android:background="@drawable/ny_backgrund"
     android:orientation="vertical"
     android:gravity="center"
     tools:context=".WelcomeActivity">
 
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="301dp"
+        android:layout_height="256dp"
+        app:srcCompat="@drawable/eea96a4bf47ff4d11964e3d66959d273" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="Welcome"
         android:textColor="@android:color/white"
-        android:textSize="30sp"
+        android:textSize="45dp"
         android:textStyle="bold"></TextView>
 
     <Button
         android:id="@+id/register_welcome_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:textColor="@android:color/white"
-        android:background="@color/colorPrimaryDark"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:layout_marginTop="40dp"
-        >
+        android:layout_marginRight="20dp"
+        android:background="@drawable/roundstyle"
+        android:backgroundTint="@android:color/white"
+        android:foregroundTint="#FFFFFF"
+        android:text="Register"
+        android:textColor="#000000"
+        app:iconTint="#FFFFFF"
+        app:rippleColor="#FFFFFF">
 
     </Button>
 
     <Button
         android:id="@+id/login_welcome_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:textColor="@android:color/white"
-        android:background="@color/colorPrimaryDark"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
-        >
+        android:layout_marginRight="20dp"
+        android:background="@drawable/roundstyle"
+        android:text="Login"
+
+        android:textColor="#000000"
+        android:textColorHighlight="@android:color/white">
 
     </Button>
+
+
 
 </LinearLayout>
