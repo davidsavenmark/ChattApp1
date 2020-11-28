@@ -160,7 +160,7 @@ class SearchFragment : Fragment() {
             setTitle("Add a friend?")
             setMessage("Do you want to add ${it.username} as a friend?")
             setCancelable(false)
-            setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
+            setPositiveButton("OK") { _: DialogInterface, _: Int ->
                 /*Add the friend to the current user's friendsCollection.*/
                 val currentUsersFriendsCollection =
                     userRef.document(firebaseUserID)
@@ -174,7 +174,7 @@ class SearchFragment : Fragment() {
                         logMaker("failed to add a user.$it")
                     }
             }
-            setNegativeButton("No") { dialogInterface: DialogInterface, i: Int ->
+            setNegativeButton("No") { _: DialogInterface, _: Int ->
                 //nothing to do
             }
             show()

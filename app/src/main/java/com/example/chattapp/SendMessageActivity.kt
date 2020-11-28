@@ -29,7 +29,7 @@ class SendMessageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_message)
-        getParameter()
+        getVariables()
 
         username_mchat.text = friendUsername
         //val username = intent?.getStringExtra(CURRENTUSER)
@@ -44,8 +44,8 @@ class SendMessageActivity : AppCompatActivity() {
         super.onStart()
         getChatListData()
     }
-
-    private fun getParameter() {
+//Get two variables from the last fragment.
+    private fun getVariables() {
         friendUid = intent.getStringExtra("FRIENDUID").toString()
         friendUsername = intent.getStringExtra("FRIENDUSERNAME").toString()
     }
@@ -53,7 +53,6 @@ class SendMessageActivity : AppCompatActivity() {
     private fun initDataBase() {
 
         val db = Firebase.firestore
-        val currentUser = FirebaseAuth.getInstance().currentUser
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
         val path = getMessageDocumentPath(firebaseUserID, friendUid)
         messageRef = db
@@ -109,6 +108,9 @@ class SendMessageActivity : AppCompatActivity() {
 
             toastMaker("Successful sending message $message")
             text_message.setText("")
+        }
+        attact_image_file_btn.setOnClickListener{
+
         }
     }
 

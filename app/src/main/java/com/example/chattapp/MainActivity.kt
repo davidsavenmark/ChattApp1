@@ -15,12 +15,10 @@ import com.example.chattapp.fragments.SearchFragment
 import com.example.chattapp.fragments.SettingsFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 //test
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         //var firebaseUser = FirebaseAuth.getInstance().currentUser
         //var refUsers =
-            //FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
+        //FirebaseDatabase.getInstance().reference.child("Users").child(firebaseUser!!.uid)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
         tool_bar_title.text = "${FirebaseAuth.getInstance().currentUser?.email}"
@@ -75,9 +73,9 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
-    internal class ViewPagerAdapter(fragmentManager: FragmentManager) :
-        FragmentPagerAdapter(fragmentManager) {
-
+    //Adapter to show these three Fragments, similar as RecyclerView.(Have changed the deprecated one from the tutorial, suggestions from "stack overflow")
+    class ViewPagerAdapter(manager: FragmentManager) :
+        FragmentPagerAdapter(manager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments: ArrayList<Fragment> = ArrayList<Fragment>()
         private val titles: ArrayList<String> = ArrayList<String>()
 

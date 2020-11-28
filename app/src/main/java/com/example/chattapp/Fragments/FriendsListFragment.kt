@@ -40,8 +40,8 @@ class FriendsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initUserDataBase()
         initFriendDataBase()
-        initFriendRecyclerView()
         getFriendListData()
+        initFriendRecyclerView()
     }
 
     private fun initUserDataBase() {
@@ -55,30 +55,6 @@ class FriendsListFragment : Fragment() {
         friendRef = db.collection("users").document(firebaseUserID).collection("friendsCollection")
     }
 
-    private fun initFriendRecyclerView() {
-        val layoutManager = LinearLayoutManager(requireContext())
-        friends_recyclerView.layoutManager = layoutManager
-
-        //The variable "listener" is a parameter of "FriendAdapter"
-        val listener: (ChatUser) -> Unit = {
-            val intent: Intent = Intent(requireContext(), SendMessageActivity::class.java)
-            intent.putExtra("FRIENDUID", it.uid)
-            intent.putExtra("FRIENDUSERNAME",it.username)
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        }
-
-        val adapter = FriendAdapter(friendsList, listener)
-        friends_recyclerView.adapter = adapter
-
-        val itemDecorator = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-        ContextCompat.getDrawable(requireContext(), R.drawable.divider)
-            ?.let { itemDecorator.setDrawable(it) }
-        friends_recyclerView.addItemDecoration(itemDecorator)
-
-        friends_recyclerView.scrollToPosition(adapter.itemCount - 1)
-    }
-
     private fun getFriendListData() {
         //Get a temporary frienduidlist, just add Friend(id)
         val tempFriendUidList: MutableList<Friend> = mutableListOf()
@@ -89,27 +65,59 @@ class FriendsListFragment : Fragment() {
                 tempFriendUidList.add(Friend(id))
             }
 
-            logMaker("HahaFriendList:$tempFriendUidList")
+            logMaker("tempUidFriendList is:$tempFriendUidList")
+
+            logMaker("3. friendRef addOnSuccessListener finished!-----${friendsList.size}")
 
             tempFriendUidList.forEach {
                 //Get Friend's uid
                 val uid = it.uid
                 // Look for a user in "users" collection whose uid is Friend's uid.Get its username and profile because we add such a ChatUser(OBS!!different members)in friendsList.
                 userRef.document(uid).get().addOnSuccessListener { document ->
+                    //get the username of which uid equals to "it.uid"
+                    //val tempUid = document["profile"] as String
                     val username = document["username"] as String
                     val profile = document["profile"] as String
-                    friendsList.add(ChatUser(username = username, profile = profile))
-                    logMaker("HahaFriendList:$tempFriendUidList")
+                    //set username and profile in an object from Class ChatUser, then add the object into friendsList.
+                    friendsList.add(ChatUser(uid = uid, username = username, profile = profile))
+                    logMaker("friendsList:${friendsList}")
+
+                    logMaker("4. userRef addOnSuccessListener finished!-----${friendsList.size}")
                     //sort by name
                     friendsList.sortBy { it.username }
                     refreshRecyclerView()
                 }
             }
-
         }
             .addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)
             }
+
+        logMaker("1. getFriendListData finished!-----${friendsList.size}")
+    }
+
+    private fun initFriendRecyclerView() {
+        val listener: (ChatUser) -> Unit = {
+            val intent: Intent = Intent(requireContext(), SendMessageActivity::class.java)
+            intent.putExtra("FRIENDUID", it.uid)
+
+            logMaker("it.uid is ${it.uid}")
+
+            intent.putExtra("FRIENDUSERNAME", it.username)
+            startActivity(intent)
+        }
+        val adapter = FriendAdapter(friendsList, listener)
+        friends_recyclerView.adapter = adapter
+        friends_recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        logMaker("2. Create FriendAdapter finished!-----${friendsList.size}")
+
+        val itemDecorator = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        ContextCompat.getDrawable(requireContext(), R.drawable.divider)
+            ?.let { itemDecorator.setDrawable(it) }
+        friends_recyclerView.addItemDecoration(itemDecorator)
+        friends_recyclerView.scrollToPosition(adapter.itemCount - 1)
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
     private fun refreshRecyclerView() {
@@ -121,6 +129,6 @@ class FriendsListFragment : Fragment() {
     }
 
     private fun logMaker(text: String) {
-        Log.v("ChatApp", text)
+        Log.v("ChatAppKF", text)
     }
 }

@@ -103,7 +103,7 @@ class SettingsFragment : Fragment() {
                     showImage(profile.toUri(), profile_image_settings)
                 }
             }
-            .addOnFailureListener { exception ->
+            .addOnFailureListener {
 
             }
         //Add a button "update", if click it,upload the picture you choose in local mobil to Storage, path is /images.
