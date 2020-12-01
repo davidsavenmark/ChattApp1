@@ -31,6 +31,7 @@ import com.google.firebase.storage.ktx.storage
 import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_send_message.*
 import kotlinx.android.synthetic.main.fragment_settings.*
+import java.sql.Ref
 
 class SendMessageActivity : AppCompatActivity() {
 
@@ -43,11 +44,12 @@ class SendMessageActivity : AppCompatActivity() {
     private lateinit var sharedPictureUri:Uri
     private lateinit var userRef: CollectionReference
 
-
-    private var firebaseUser = FirebaseAuth.getInstance().currentUser // testade lägga in dessa variabler för att få koden längre ner ( rad 199 till 222) att fungera
-    val db = Firebase.firestore
-    val message = ""
-    val receiverId = firebaseUser
+    // Prövade lägga in dessa variabler för
+    // att få koden längre ner ( rad 199 till 222) att fungera
+    private var firebaseUser = FirebaseAuth.getInstance().currentUser
+    private val db = Firebase.firestore
+    private val message = ""
+    private val receiverId = firebaseUser
 
     var notify = false
 
@@ -197,6 +199,10 @@ class SendMessageActivity : AppCompatActivity() {
                                     "Error updating document",
                                     exception
                                 )
+
+                                //ref.child("Chats").child(messageId!!).setValue(messageHashMap)
+
+
                             }
 
                             // implementerar push notifications via fcm ( firebase cloud messaging )
@@ -235,9 +241,12 @@ class SendMessageActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun sendNotification(receiverId: String?, userName: String?, message: String?)
 
     {
+
 
 
     }
