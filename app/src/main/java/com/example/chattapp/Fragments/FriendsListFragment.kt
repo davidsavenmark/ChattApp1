@@ -21,7 +21,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_friendslist.*
 
-class FriendsListFragment : Fragment() {
+ class FriendsListFragment : Fragment() {
 
     private lateinit var userRef: CollectionReference
     private lateinit var friendRef: CollectionReference
@@ -76,16 +76,20 @@ class FriendsListFragment : Fragment() {
                 userRef.document(uid).get().addOnSuccessListener { document ->
                     //get the username of which uid equals to "it.uid"
                     //val tempUid = document["profile"] as String
-                    val username = document["username"] as String
-                    val profile = document["profile"] as String
-                    //set username and profile in an object from Class ChatUser, then add the object into friendsList.
-                    friendsList.add(ChatUser(uid = uid, username = username, profile = profile))
-                    logMaker("friendsList:${friendsList}")
+                    if (document!=null){
+                        logMaker("$uid is $document")
+                        val username = document["username"] as String
+                        val profile = document["profile"] as String
+                        //set username and profile in an object from Class ChatUser, then add the object into friendsList.
+                        friendsList.add(ChatUser(uid = uid, username = username, profile = profile))
+                        logMaker("friendsList:${friendsList}")
 
-                    logMaker("4. userRef addOnSuccessListener finished!-----${friendsList.size}")
-                    //sort by name
-                    friendsList.sortBy { it.username }
-                    refreshRecyclerView()
+                        logMaker("4. userRef addOnSuccessListener finished!-----${friendsList.size}")
+                        //sort by name
+                        friendsList.sortBy { it.username }
+                        refreshRecyclerView()
+                    }
+
                 }
             }
         }

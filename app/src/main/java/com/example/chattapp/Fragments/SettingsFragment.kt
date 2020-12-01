@@ -37,10 +37,7 @@ class SettingsFragment : Fragment() {
     //    var usersRefrence: DatabaseReference? = null
     var firebaseUser: FirebaseUser? = null
     private val RequestCode = 438
-    private var imageUri: Uri? = null
     private lateinit var storage: FirebaseStorage
-    private var coverChecker: String? = ""
-    private var socialChecker: String? = ""
     private lateinit var mSelected: List<Uri>
     private lateinit var profileImageUri: Uri
     val db = Firebase.firestore
