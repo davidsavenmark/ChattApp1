@@ -17,13 +17,6 @@
             android:padding="10dp">
             //ändra bilden till något annat
 
-            <ImageView
-                android:id="@+id/cover_image_settings"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/welcome" />
-
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image_settings"
                 android:layout_width="150dp"
@@ -53,46 +46,6 @@
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cv1"
-        android:layout_marginTop="40dp"
-        android:background="@color/colorProfile"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="6dp">
-
-        <ImageView
-            android:id="@+id/set_facebook"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginRight="35dp"
-            android:gravity="center"
-            android:scaleType="centerCrop"
-            android:src="@drawable/fb" />
-
-        <ImageView
-            android:id="@+id/set_instagram"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginRight="35dp"
-            android:gravity="center"
-            android:scaleType="centerCrop"
-            android:src="@drawable/instagram" />
-
-        <ImageView
-            android:id="@+id/set_website"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="3dp"
-            android:gravity="center"
-            android:scaleType="centerCrop"
-            android:src="@drawable/website" />
-
-    </LinearLayout>
 
     <Button
         android:id="@+id/update_button"

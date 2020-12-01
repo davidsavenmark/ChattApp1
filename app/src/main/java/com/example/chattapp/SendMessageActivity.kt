@@ -1,13 +1,19 @@
 package com.example.chattapp
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.chattapp.adapter.MessageAdapter
+import com.example.chattapp.fragments.SettingsFragment
 import com.example.chattapp.model.ChatLine
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -15,21 +21,38 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
+import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_send_message.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SendMessageActivity : AppCompatActivity() {
 
     private lateinit var messageRef: CollectionReference
     private var messageList = mutableListOf<ChatLine>()
+    private lateinit var mSelected: List<Uri>
     private lateinit var firebaseUserID: String
     private lateinit var friendUid: String
     private lateinit var friendUsername: String
+    private lateinit var sharedPictureUri:Uri
+    val db = Firebase.firestore
+    private lateinit var userRef: CollectionReference
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SettingsFragment.REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+            mSelected = Matisse.obtainResult(data)
+            sharedPictureUri = mSelected.first()
+            showImage(sharedPictureUri, profile_image_settings)
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_message)
-        getParameter()
+        getVariables()
 
         username_mchat.text = friendUsername
         //val username = intent?.getStringExtra(CURRENTUSER)
@@ -44,16 +67,13 @@ class SendMessageActivity : AppCompatActivity() {
         super.onStart()
         getChatListData()
     }
-
-    private fun getParameter() {
+//Get two variables from the last fragment.
+    private fun getVariables() {
         friendUid = intent.getStringExtra("FRIENDUID").toString()
         friendUsername = intent.getStringExtra("FRIENDUSERNAME").toString()
     }
 
     private fun initDataBase() {
-
-        val db = Firebase.firestore
-        val currentUser = FirebaseAuth.getInstance().currentUser
         firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
         val path = getMessageDocumentPath(firebaseUserID, friendUid)
         messageRef = db
@@ -110,8 +130,65 @@ class SendMessageActivity : AppCompatActivity() {
             toastMaker("Successful sending message $message")
             text_message.setText("")
         }
-    }
+        attact_image_file_btn.setOnClickListener {
+            val sharedPicture: Uri = sharedPictureUri
+            val storage: FirebaseStorage= Firebase.storage
+            val storageRef = storage.reference
+            val riversRef = storageRef.child("images/${sharedPicture.lastPathSegment}")
+            val uploadTask = riversRef.putFile(sharedPicture)
 
+            uploadTask
+                .addOnFailureListener {
+                    logMaker("Upload failed!($sharedPicture)")
+                }
+                .addOnSuccessListener { taskSnapshot ->
+                    logMaker("Upload success!($sharedPicture),${taskSnapshot.uploadSessionUri}")
+                }
+                .continueWithTask { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
+                        }
+                    }
+                    riversRef.downloadUrl
+                }
+                //If the upload is successful, give downloadUri.
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+                        logMaker("downloadUri:($downloadUri)")
+
+//Update information of current user in firestore, profile which comes from Storage, pictures uri.OBS!!!downloadUri is not a String.Put downloadUri in the profile field.
+                        userRef=db.collection("users")
+                        userRef.document(firebaseUserID)
+                            .update("profile", downloadUri.toString())
+                            .addOnSuccessListener {
+                                Log.d(
+                                    "TAG!!!",
+                                    "DocumentSnapshot successfully updated!"
+                                )
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.w(
+                                    "TAG!!!",
+                                    "Error updating document",
+                                    exception
+                                )
+                            }
+
+                    }
+                }
+
+        }
+    }
+    //"showImage" function : To load the uri in the position - imageView.
+    private fun showImage(uri: Uri, imageView: ImageView) {
+        Glide.with(this)
+            .asBitmap()
+            .load(uri)
+            .placeholder(R.drawable.ic_profile)
+            .into(imageView)
+    }
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         recycler_view_chats.layoutManager = layoutManager

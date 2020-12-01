@@ -19,27 +19,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.ChattApp.PopupOverlay" >
+            app:popupTheme="@style/Theme.ChattApp.PopupOverlay">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image_mchat"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/ic_profile"
-                >
-            </de.hdodenhof.circleimageview.CircleImageView>
+                android:src="@drawable/ic_profile"/>
 
             <TextView
                 android:id="@+id/username_mchat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
                 android:layout_marginLeft="26dp"
-                android:textColor="@android:color/white"
                 android:text="user name"
-                android:textStyle="bold"
-                >
-            </TextView>
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/share_address"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="share address"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="100dp"
+                android:background="@color/design_default_color_background"
+                android:textColor="@color/cardview_shadow_end_color"/>
 
 
         </androidx.appcompat.widget.Toolbar>
