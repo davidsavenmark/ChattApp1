@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
+    android:gravity="center"
     tools:context=".LoginActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -17,20 +18,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.ChattApp.PopupOverlay" >
+            app:popupTheme="@style/Theme.ChattApp.PopupOverlay">
 
 
         </androidx.appcompat.widget.Toolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:layout_centerInParent="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_centerInParent="true">
+        android:padding="16dp">
 
 
         <ImageView
@@ -49,9 +49,9 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/roundstyle"
             android:backgroundTint="@android:color/white"
+            android:gravity="center"
             android:hint="Email"
             android:inputType="text"
-            android:gravity="center"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black">
 
@@ -64,8 +64,8 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/roundstyle"
             android:backgroundTint="@android:color/white"
-            android:hint="Password"
             android:gravity="center"
+            android:hint="Password"
             android:inputType="textPassword"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black">
@@ -76,13 +76,22 @@
             android:id="@+id/login_btn"
             android:layout_width="150dp"
             android:layout_height="50dp"
-            android:text="Login"
             android:layout_marginTop="30dp"
-            android:textColor="@android:color/white"
             android:background="@drawable/roundstyle"
-            >
+            android:text="Login"
+            android:textColor="@android:color/white">
 
         </Button>
+
+        <TextView
+            android:id="@+id/textView_forgot_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="Have you forgot your password?"
+            android:textColor="#FFFFFF"
+            android:textSize="18dp" />
     </LinearLayout>
 
 
