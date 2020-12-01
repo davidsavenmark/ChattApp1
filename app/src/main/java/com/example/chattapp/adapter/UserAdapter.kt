@@ -24,7 +24,7 @@ class UserAdapter(
         var userNameTxt: TextView = itemView.findViewById(R.id.username)
         var profileImageView: CircleImageView = itemView.findViewById(R.id.profile_image)
         var onlineImageView: CircleImageView = itemView.findViewById(R.id.image_online)
-        var offlineImageView: CircleImageView = itemView.findViewById(R.id.image_offline)
+        //var offlineImageView: CircleImageView = itemView.findViewById(R.id.image_offline)
         var lastMessageTxt: TextView = itemView.findViewById(R.id.message_last)
     }
 

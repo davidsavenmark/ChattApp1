@@ -183,4 +183,10 @@ class SearchFragment : Fragment() {
 
     //To do: If the person has already been your friend, do not show him(her) in the list.To be continued!
 
+
+
+
+
+
+
 }

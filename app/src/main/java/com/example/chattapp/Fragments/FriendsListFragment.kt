@@ -110,7 +110,7 @@ import kotlinx.android.synthetic.main.fragment_friendslist.*
             intent.putExtra("FRIENDUSERNAME", it.username)
             startActivity(intent)
         }
-        val adapter = FriendAdapter(friendsList, listener)
+        val adapter = FriendAdapter(friendsList, listener,false)
         friends_recyclerView.adapter = adapter
         friends_recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
