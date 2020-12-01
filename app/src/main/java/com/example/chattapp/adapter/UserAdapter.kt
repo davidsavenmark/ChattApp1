@@ -14,6 +14,7 @@ import com.example.chattapp.model.Users
 import de.hdodenhof.circleimageview.CircleImageView
 
 
+
 class UserAdapter(
     private var userList: MutableList<Users>,
     //listener as a variable

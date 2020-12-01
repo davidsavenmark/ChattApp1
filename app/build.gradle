@@ -43,6 +43,10 @@ android {
 dependencies {
 
     implementation 'com.google.firebase:firebase-database-ktx:19.5.1'
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
+    implementation 'com.google.firebase:firebase-dynamic-links:19.1.1'
+    implementation 'com.google.firebase:firebase-functions:19.1.0'
+    implementation 'com.google.firebase:firebase-storage:19.2.0'
     def glide_version = "4.11.0"
     def glide_transform_version = "4.1.0"
     def matisse_version = "0.5.3-beta3"

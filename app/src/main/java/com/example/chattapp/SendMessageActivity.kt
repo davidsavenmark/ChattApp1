@@ -15,7 +15,12 @@ import com.bumptech.glide.Glide
 import com.example.chattapp.adapter.MessageAdapter
 import com.example.chattapp.fragments.SettingsFragment
 import com.example.chattapp.model.ChatLine
+import com.example.chattapp.model.Users
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.SetOptions
@@ -36,8 +41,20 @@ class SendMessageActivity : AppCompatActivity() {
     private lateinit var friendUid: String
     private lateinit var friendUsername: String
     private lateinit var sharedPictureUri:Uri
-    val db = Firebase.firestore
     private lateinit var userRef: CollectionReference
+
+
+    private var firebaseUser = FirebaseAuth.getInstance().currentUser // testade lägga in dessa variabler för att få koden längre ner ( rad 199 till 222) att fungera
+    val db = Firebase.firestore
+    val message = ""
+    val receiverId = firebaseUser
+
+    var notify = false
+
+
+
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -115,6 +132,7 @@ class SendMessageActivity : AppCompatActivity() {
     private fun initListener() {
 
         send_message_btn.setOnClickListener {
+            notify = true
             val message = text_message.text.toString()
             if (message.isBlank()) {
                 return@setOnClickListener
@@ -131,6 +149,8 @@ class SendMessageActivity : AppCompatActivity() {
             text_message.setText("")
         }
         attact_image_file_btn.setOnClickListener {
+
+            notify = true
             val sharedPicture: Uri = sharedPictureUri
             val storage: FirebaseStorage= Firebase.storage
             val storageRef = storage.reference
@@ -148,7 +168,10 @@ class SendMessageActivity : AppCompatActivity() {
                     if (!task.isSuccessful) {
                         task.exception?.let {
                             throw it
+
                         }
+
+
                     }
                     riversRef.downloadUrl
                 }
@@ -176,11 +199,49 @@ class SendMessageActivity : AppCompatActivity() {
                                 )
                             }
 
+                            // implementerar push notifications via fcm ( firebase cloud messaging )
+                            val reference = FirebaseDatabase.getInstance().reference.
+                            child("Users").child(firebaseUser!!.uid)
+
+
+                            reference.addValueEventListener(object: ValueEventListener{
+                                override fun onDataChange(p0: DataSnapshot)
+
+                                {
+
+                                    val user = p0.getValue(Users::class.java)
+                                    if (notify)
+                                    {
+
+                                        // testade skriva detta istället för user!!.getUserName()
+
+                                        sendNotification(receiverId.toString(), user!!.toString(), message)
+                                    }
+                                    notify = false
+
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            })
+
+
+
                     }
                 }
 
         }
     }
+
+    private fun sendNotification(receiverId: String?, userName: String?, message: String?)
+
+    {
+
+
+    }
+
     //"showImage" function : To load the uri in the position - imageView.
     private fun showImage(uri: Uri, imageView: ImageView) {
         Glide.with(this)
