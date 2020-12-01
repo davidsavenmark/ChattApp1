@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_new_password.*
 
 
 //test
@@ -46,8 +47,16 @@ class MainActivity : AppCompatActivity() {
         viewPagerAdapter.addFragment(SearchFragment(), "Search")
         viewPagerAdapter.addFragment(SettingsFragment(), "Settings")
 
+        btn_change_password.setOnClickListener {
+            changePassword()
+        }
+
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
+    }
+
+    private fun changePassword(){
+        
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
