@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.chattapp.adapter.MessageAdapter
@@ -21,8 +20,6 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
 import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_send_message.*
 import kotlinx.android.synthetic.main.fragment_settings.*
@@ -35,7 +32,7 @@ class SendMessageActivity : AppCompatActivity() {
     private lateinit var firebaseUserID: String
     private lateinit var friendUid: String
     private lateinit var friendUsername: String
-    private lateinit var sharedPictureUri:Uri
+    private lateinit var sharedPictureUri: Uri
     val db = Firebase.firestore
     private lateinit var userRef: CollectionReference
 
@@ -57,7 +54,11 @@ class SendMessageActivity : AppCompatActivity() {
         username_mchat.text = friendUsername
         //val username = intent?.getStringExtra(CURRENTUSER)
         //prepareTestData()
-        initDataBase()
+        if (friendUid.length <= 28) {
+            initDataBase()
+        } else {
+            initGroupDataBase()
+        }
         initListener()
         initRecyclerView()
         realTimeUpdateMessage()
@@ -67,17 +68,25 @@ class SendMessageActivity : AppCompatActivity() {
         super.onStart()
         getChatListData()
     }
-//Get two variables from the last fragment.
+
+    //Get two variables from the last fragment.
     private fun getVariables() {
         friendUid = intent.getStringExtra("FRIENDUID").toString()
         friendUsername = intent.getStringExtra("FRIENDUSERNAME").toString()
+        firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
     }
 
     private fun initDataBase() {
-        firebaseUserID = FirebaseAuth.getInstance().currentUser!!.uid
         val path = getMessageDocumentPath(firebaseUserID, friendUid)
         messageRef = db
             .collection("messages").document(path)
+            .collection("ChatLine")
+    }
+
+    private fun initGroupDataBase() {
+        val path = friendUid
+        messageRef = db
+            .collection("groups").document(path)
             .collection("ChatLine")
     }
 
@@ -130,9 +139,9 @@ class SendMessageActivity : AppCompatActivity() {
             toastMaker("Successful sending message $message")
             text_message.setText("")
         }
-        attact_image_file_btn.setOnClickListener {
+        /*attact_image_file_btn.setOnClickListener {
             val sharedPicture: Uri = sharedPictureUri
-            val storage: FirebaseStorage= Firebase.storage
+            val storage: FirebaseStorage = Firebase.storage
             val storageRef = storage.reference
             val riversRef = storageRef.child("images/${sharedPicture.lastPathSegment}")
             val uploadTask = riversRef.putFile(sharedPicture)
@@ -159,7 +168,7 @@ class SendMessageActivity : AppCompatActivity() {
                         logMaker("downloadUri:($downloadUri)")
 
 //Update information of current user in firestore, profile which comes from Storage, pictures uri.OBS!!!downloadUri is not a String.Put downloadUri in the profile field.
-                        userRef=db.collection("users")
+                        userRef = db.collection("users")
                         userRef.document(firebaseUserID)
                             .update("profile", downloadUri.toString())
                             .addOnSuccessListener {
@@ -179,8 +188,9 @@ class SendMessageActivity : AppCompatActivity() {
                     }
                 }
 
-        }
+        }*/
     }
+
     //"showImage" function : To load the uri in the position - imageView.
     private fun showImage(uri: Uri, imageView: ImageView) {
         Glide.with(this)
@@ -189,6 +199,7 @@ class SendMessageActivity : AppCompatActivity() {
             .placeholder(R.drawable.ic_profile)
             .into(imageView)
     }
+
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         recycler_view_chats.layoutManager = layoutManager

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
@@ -17,7 +18,8 @@ import com.example.chattapp.model.ChatUser
 class FriendAdapter(//members: a list is a must,listner, it depends on.inheritage from RecyclerView.Adapter<FriendAdapter.FriendsViewHolder>
     private var friendsList: MutableList<ChatUser>,
     private var listener: (ChatUser) -> Unit,
-    private var showCheckBoxOrNot:Boolean
+    private var showCheckBoxOrNot:Boolean,
+
 ) : RecyclerView.Adapter<FriendAdapter.FriendsViewHolder>() {
 //class "FriendsViewHolder" is a must, see up,FriendsViewHolder.
     inner class FriendsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -37,11 +39,10 @@ class FriendAdapter(//members: a list is a must,listner, it depends on.inheritag
         val friend = friendsList[position]
 
         holder.apply {
-            if(showCheckBoxOrNot){
-                checkBox.visibility = View.VISIBLE
-            } else {
-                checkBox.visibility = View.GONE
-            }
+
+            checkBox.visibility = View.GONE
+
+
             oneFriendViewName.text = friend.username
             if (friend.profile != ChatUser.profileDefault) {
                 showImage(friend.profile.toUri(), oneFriendViewImage)
