@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.chattapp.Fragments.APIService
+import com.example.chattapp.Notifications.*
 import com.example.chattapp.adapter.MessageAdapter
 import com.example.chattapp.fragments.SettingsFragment
 import com.example.chattapp.model.ChatLine
@@ -31,6 +33,9 @@ import com.google.firebase.storage.ktx.storage
 import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_send_message.*
 import kotlinx.android.synthetic.main.fragment_settings.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.sql.Ref
 
 class SendMessageActivity : AppCompatActivity() {
@@ -52,6 +57,8 @@ class SendMessageActivity : AppCompatActivity() {
     private val receiverId = firebaseUser
 
     var notify = false
+
+    var apiService: APIService? = null
 
 
 
@@ -80,12 +87,18 @@ class SendMessageActivity : AppCompatActivity() {
         initListener()
         initRecyclerView()
         realTimeUpdateMessage()
+
+        apiService = Client.Client.getClient("https://fcm.googleapis.com/")!!.create(APIService::class.java)
     }
 
     override fun onStart() {
         super.onStart()
         getChatListData()
     }
+
+
+
+
 //Get two variables from the last fragment.
     private fun getVariables() {
         friendUid = intent.getStringExtra("FRIENDUID").toString()
@@ -199,39 +212,50 @@ class SendMessageActivity : AppCompatActivity() {
                                     "Error updating document",
                                     exception
                                 )
+                            }
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful)
+                                {
 
-                                //ref.child("Chats").child(messageId!!).setValue(messageHashMap)
+                                    // implementerar push notifications via fcm ( firebase cloud messaging )
+                                    val reference = FirebaseDatabase.getInstance().reference.
+                                    child("Users").child(firebaseUser!!.uid)
 
+
+                                    reference.addValueEventListener(object: ValueEventListener{
+                                        override fun onDataChange(p0: DataSnapshot)
+
+                                        {
+
+                                            val user = p0.getValue(Users::class.java)
+                                            if (notify)
+                                            {
+
+                                                // testade skriva detta istället för user!!.getUserName()
+
+                                                sendNotification(firebaseUserID.toString(), user!!.toString(), "sent you an image.")
+                                            }
+                                            notify = false
+
+                                        }
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                    })
+
+
+
+
+
+
+
+                                }
 
                             }
 
-                            // implementerar push notifications via fcm ( firebase cloud messaging )
-                            val reference = FirebaseDatabase.getInstance().reference.
-                            child("Users").child(firebaseUser!!.uid)
 
-
-                            reference.addValueEventListener(object: ValueEventListener{
-                                override fun onDataChange(p0: DataSnapshot)
-
-                                {
-
-                                    val user = p0.getValue(Users::class.java)
-                                    if (notify)
-                                    {
-
-                                        // testade skriva detta istället för user!!.getUserName()
-
-                                        sendNotification(receiverId.toString(), user!!.toString(), message)
-                                    }
-                                    notify = false
-
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    TODO("Not yet implemented")
-                                }
-
-                            })
 
 
 
@@ -239,6 +263,34 @@ class SendMessageActivity : AppCompatActivity() {
                 }
 
         }
+
+        // implementerar push notifications via fcm ( firebase cloud messaging )
+        val usersReference = FirebaseDatabase.getInstance().reference.
+        child("Users").child(firebaseUser!!.uid)
+
+
+        usersReference.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(p0: DataSnapshot)
+
+            {
+
+                val user = p0.getValue(Users::class.java)
+                if (notify)
+                {
+
+                    // testade skriva detta istället för user!!.getUserName()
+
+                    sendNotification(receiverId.toString(), user!!.toString(), message)
+                }
+                notify = false
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 
 
@@ -247,6 +299,57 @@ class SendMessageActivity : AppCompatActivity() {
 
     {
 
+        val ref = FirebaseDatabase.getInstance().getReference().child("Tokens")
+
+        val query = ref.orderByKey().equalTo(receiverId)
+
+        query.addValueEventListener (object : ValueEventListener{
+            override fun onDataChange (p0: DataSnapshot)
+            {
+                for (dataSnapshot in p0.children)
+                {
+                    val token: Token? = dataSnapshot.getValue(Token::class.java)
+
+                    val data = Data (firebaseUser!!.uid,
+                        R.mipmap.ic_launcher.toString(),
+                        "$userName: $message", "New Message",
+                        friendUid
+                    )
+
+                    val sender = Sender(data!!, token!!.getToken().toString())
+
+                    apiService!!.sendNotification(sender).enqueue(object : Callback<MyResponse>
+                    {
+                        override fun onResponse(
+                            call: Call<MyResponse>,
+                            response: Response<MyResponse>
+                        )
+                        {
+                            if(response.code() == 200)
+                            {
+                                if(response.body()!!.sucess !== 1)
+                                {
+                                    Toast.makeText(this@SendMessageActivity, "Failed, Nothing happened", Toast.LENGTH_LONG).show()
+                                }
+                            }
+
+                        }
+
+                        override fun onFailure(call: Call<MyResponse>, t: Throwable) {
+
+                        }
+
+                    })
+
+
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
 
 
     }
