@@ -37,7 +37,6 @@ class MessageAdapter(
             }else{
                 oneMessage.gravity =Gravity.START
             }
-
         }
     }
 

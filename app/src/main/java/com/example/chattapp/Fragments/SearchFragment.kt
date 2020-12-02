@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
@@ -16,11 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chattapp.R
 import com.example.chattapp.adapter.UserAdapter
 import com.example.chattapp.model.Friend
+import com.example.chattapp.model.GroupName
 import com.example.chattapp.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_search.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,6 +44,8 @@ class SearchFragment : Fragment() {
     private lateinit var userRef: CollectionReference
     private var userSearchResultList = mutableListOf<Users>()
     private lateinit var firebaseUserID: String
+    private var tempGroup: MutableList<String> = mutableListOf<String>()
+    val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,10 +66,8 @@ class SearchFragment : Fragment() {
         recyclerView!!.layoutManager = LinearLayoutManager(context)
 
         searchEditText = view.findViewById(R.id.searchUsersET)
-
         initUserDataBase()
         retrieveAllUsers()
-
 
         searchEditText!!.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -80,6 +83,55 @@ class SearchFragment : Fragment() {
         })
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initVisiblity()
+        create_group.setOnClickListener {
+            if (tempGroup.isEmpty()) {
+                return@setOnClickListener
+            }
+            val groupData = mutableMapOf<String, String>()
+            var groupName = ""//"GroupId-${System.currentTimeMillis()}"
+            tempGroup.add(firebaseUserID)
+            tempGroup.forEach { uid ->
+                groupName += uid
+            }
+            groupName.toCharArray().sort()
+            logMaker("GroupCheckkk:$groupName")
+            tempGroup.forEachIndexed { index, uid ->
+                groupData["memberUid-$index"] = uid
+                addGroupNameToUserRef(uid, groupName)
+            }
+
+            db.collection("groups").document(groupName).set(groupData)
+                .addOnSuccessListener {
+                    logMaker("DocumentSnapshot successfully updated!")
+                }
+                .addOnFailureListener { exception ->
+                    logMaker("Error updating document:${exception}")
+                }
+
+
+            create_group.visibility = GONE
+            tempGroup.clear()
+            userAdapter?.updateDataList()
+        }
+    }
+
+    private fun addGroupNameToUserRef(uid: String, groupName: String) {
+        val tempGroupName = GroupName(groupName)
+        val it = userRef.document(uid).collection("groupCollection").document(groupName)
+        it.set(tempGroupName)
+            .addOnSuccessListener { logMaker("DocumentSnapshot successfully written!") }
+            .addOnFailureListener { e -> logMaker("Error writing document $e") }
+    }
+
+
+    //First make the "create group" button Gone
+    private fun initVisiblity() {
+        create_group.visibility = GONE
     }
 
     /*Function initUserDataBase() to initial the users' information in the database,read in information from Authentication to Firestore*/
@@ -122,7 +174,7 @@ class SearchFragment : Fragment() {
                 Log.d("TAG", "Error getting documents: ", exception)
             }
 
-        userAdapter = UserAdapter(userList, itemUserListener)
+        userAdapter = UserAdapter(userList, itemUserListener, checkBoxListener)
         recyclerView!!.adapter = userAdapter
 
 
@@ -151,8 +203,9 @@ class SearchFragment : Fragment() {
         }
         userAdapter?.updateDataList(userSearchResultList)
     }
-
     /*!!!!!!!Add a friend without his(her)permission!!!!!! If you press "OK", add him(her) directly. To be continued!*/
+
+
     //The variable "itemUserListener" is a parameter of UserAdapter
     private var itemUserListener: (Users) -> Unit = {
         //Toast.makeText(itemView.context, "Username is ${user.username}", Toast.LENGTH_SHORT).show()
@@ -180,7 +233,21 @@ class SearchFragment : Fragment() {
             show()
         }
     }
+    private var checkBoxListener: (Boolean, Users) -> Unit = { b: Boolean, user: Users ->
+        if (b) {
+            tempGroup.add(user.uid)
+        } else {
+            tempGroup.remove(user.uid)
+        }
+        if (tempGroup.isEmpty()) {
+            create_group.visibility = View.GONE
+        } else {
+            create_group.visibility = View.VISIBLE
+        }
+        logMaker("tempGroup is $tempGroup")
+    }
 
     //To do: If the person has already been your friend, do not show him(her) in the list.To be continued!
+
 
 }

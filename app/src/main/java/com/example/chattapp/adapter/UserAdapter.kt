@@ -4,6 +4,8 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
@@ -18,14 +20,18 @@ class UserAdapter(
     private var userList: MutableList<Users>,
     //listener as a variable
     private val listener: (Users) -> Unit,
+    private var checkBoxListener: (Boolean, Users) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.ViewHolder?>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var userNameTxt: TextView = itemView.findViewById(R.id.username)
         var profileImageView: CircleImageView = itemView.findViewById(R.id.profile_image)
         var onlineImageView: CircleImageView = itemView.findViewById(R.id.image_online)
-        var offlineImageView: CircleImageView = itemView.findViewById(R.id.image_offline)
+
+        //var offlineImageView: CircleImageView = itemView.findViewById(R.id.image_offline)
         var lastMessageTxt: TextView = itemView.findViewById(R.id.message_last)
+        var checkBox: CheckBox = itemView.findViewById(R.id.member_checkbox)
+
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -41,6 +47,13 @@ class UserAdapter(
         val user: Users = userList[i]
 
         holder.apply {
+
+            checkBox.visibility = View.VISIBLE
+            checkBox.isChecked = false
+            checkBox.setOnCheckedChangeListener { compoundButton: CompoundButton, b: Boolean ->
+                checkBoxListener(b, user)
+            }
+
             userNameTxt.text = user.username
             if (user.profile != "") {
                 showImage(user.profile.toUri(), profileImageView)
@@ -51,6 +64,11 @@ class UserAdapter(
             }
 
         }
+    }
+
+    //Notify the changes of data.
+    fun updateDataList() {
+        notifyDataSetChanged()
     }
 
     //Notify the changes of data.

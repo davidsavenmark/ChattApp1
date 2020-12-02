@@ -21,10 +21,11 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_friendslist.*
 
- class FriendsListFragment : Fragment() {
+class FriendsListFragment : Fragment() {
 
     private lateinit var userRef: CollectionReference
     private lateinit var friendRef: CollectionReference
+    private lateinit var groupRef: CollectionReference
     private lateinit var firebaseUserID: String
     var friendsList = mutableListOf<ChatUser>()
 
@@ -53,6 +54,7 @@ import kotlinx.android.synthetic.main.fragment_friendslist.*
     private fun initFriendDataBase() {
         val db = Firebase.firestore
         friendRef = db.collection("users").document(firebaseUserID).collection("friendsCollection")
+        groupRef = db.collection("users").document(firebaseUserID).collection("groupCollection")
     }
 
     private fun getFriendListData() {
@@ -65,37 +67,56 @@ import kotlinx.android.synthetic.main.fragment_friendslist.*
                 tempFriendUidList.add(Friend(id))
             }
 
-            logMaker("tempUidFriendList is:$tempFriendUidList")
+            groupRef.get().addOnSuccessListener { result ->
+                for (document in result) {
+                    val id = document.data["groupName"] as String
+                    tempFriendUidList.add(Friend(id))//as a friend
+                }
 
-            logMaker("3. friendRef addOnSuccessListener finished!-----${friendsList.size}")
+                logMaker("tempUidFriendList is:$tempFriendUidList")
+                logMaker("3. friendRef addOnSuccessListener finished!-----${friendsList.size}")
 
-            tempFriendUidList.forEach {
-                //Get Friend's uid
-                val uid = it.uid
-                // Look for a user in "users" collection whose uid is Friend's uid.Get its username and profile because we add such a ChatUser(OBS!!different members)in friendsList.
-                userRef.document(uid).get().addOnSuccessListener { document ->
-                    //get the username of which uid equals to "it.uid"
-                    //val tempUid = document["profile"] as String
-                    if (document!=null){
-                        logMaker("$uid is $document")
-                        val username = document["username"] as String
-                        val profile = document["profile"] as String
-                        //set username and profile in an object from Class ChatUser, then add the object into friendsList.
-                        friendsList.add(ChatUser(uid = uid, username = username, profile = profile))
-                        logMaker("friendsList:${friendsList}")
+                tempFriendUidList.forEach {
+                    val uid = it.uid
 
-                        logMaker("4. userRef addOnSuccessListener finished!-----${friendsList.size}")
-                        //sort by name
-                        friendsList.sortBy { it.username }
-                        refreshRecyclerView()
+                    if (uid.length <= 28) {
+                        //Get Friend's uid
+                        // Look for a user in "users" collection whose uid is Friend's uid.Get its username and profile because we add such a ChatUser(OBS!!different members)in friendsList.
+                        userRef.document(uid).get().addOnSuccessListener { document ->
+                            //get the username of which uid equals to "it.uid"
+                            //val tempUid = document["profile"] as String
+                            if (document != null) {
+                                logMaker("$uid is $document")
+                                val username = document["username"] as String
+                                val profile = document["profile"] as String
+                                //set username and profile in an object from Class ChatUser, then add the object into friendsList.
+                                friendsList.add(
+                                    ChatUser(
+                                        uid = uid,
+                                        username = username,
+                                        profile = profile
+                                    )
+                                )
+                                logMaker("friendsList:${friendsList}")
+
+                                logMaker("4. userRef addOnSuccessListener finished!-----${friendsList.size}")
+                                //sort by name
+                                friendsList.sortBy { it.username }
+                                refreshRecyclerView()
+                            }
+                        }
+                    } else {
+                        //group case
+                        val x = friendsList.size
+                        friendsList.add(ChatUser(uid = uid, username = "Group-$x"))
+                        logMaker("1. uid is group case!!!")
                     }
-
                 }
             }
+                .addOnFailureListener { exception ->
+                    Log.d("TAG", "Error getting documents: ", exception)
+                }
         }
-            .addOnFailureListener { exception ->
-                Log.d("TAG", "Error getting documents: ", exception)
-            }
 
         logMaker("1. getFriendListData finished!-----${friendsList.size}")
     }
@@ -110,7 +131,7 @@ import kotlinx.android.synthetic.main.fragment_friendslist.*
             intent.putExtra("FRIENDUSERNAME", it.username)
             startActivity(intent)
         }
-        val adapter = FriendAdapter(friendsList, listener)
+        val adapter = FriendAdapter(friendsList, listener, false)
         friends_recyclerView.adapter = adapter
         friends_recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
