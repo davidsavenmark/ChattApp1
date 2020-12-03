@@ -8,17 +8,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.example.chattapp.fragments.FriendsListFragment
 import com.example.chattapp.fragments.SearchFragment
 import com.example.chattapp.fragments.SettingsFragment
-import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
@@ -48,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                     currentUserProfile=it.data?.get("profile") as String
                     Log.d("TAG", "profilesUri is $currentUserProfile")
                     //must be here, if the data is back from server in USA,can show, otherwise has the problem of initialization.
-                    showImage(currentUserProfile.toUri() ,profile_image)
+                    showImage(currentUserProfile.toUri() ,profile_image_settings)
                 }else {
                     Log.d("TAG", "No such document")
                 }

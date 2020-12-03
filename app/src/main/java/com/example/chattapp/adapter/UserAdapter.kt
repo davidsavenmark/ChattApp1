@@ -25,7 +25,7 @@ class UserAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var userNameTxt: TextView = itemView.findViewById(R.id.username)
-        var profileImageView: CircleImageView = itemView.findViewById(R.id.profile_image)
+        var profileImageView: CircleImageView = itemView.findViewById(R.id.profile_image_settings)
         //var offlineImageView: CircleImageView = itemView.findViewById(R.id.image_offline)
         var checkBox: CheckBox = itemView.findViewById(R.id.member_checkbox)
     }

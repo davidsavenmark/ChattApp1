@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
@@ -24,7 +23,7 @@ class FriendAdapter(//members: a list is a must,listner, it depends on.inheritag
 //class "FriendsViewHolder" is a must, see up,FriendsViewHolder.
     inner class FriendsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var oneFriendViewName: TextView = view.findViewById(R.id.username)
-        var oneFriendViewImage: ImageView = view.findViewById(R.id.profile_image)
+        var oneFriendViewImage: ImageView = view.findViewById(R.id.profile_image_settings)
         var checkBox: CheckBox = view.findViewById(R.id.member_checkbox)
     }
 //Three methods to implement.

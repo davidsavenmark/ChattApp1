@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/profile_image_settings"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginStart="10dp"
@@ -23,10 +23,10 @@
         android:maxLines="1"
         android:text="user name"
         android:textSize="19sp"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image_settings"
         app:layout_constraintEnd_toStartOf="@id/member_checkbox"
-        app:layout_constraintStart_toEndOf="@id/profile_image"
-        app:layout_constraintTop_toTopOf="@id/profile_image" />
+        app:layout_constraintStart_toEndOf="@id/profile_image_settings"
+        app:layout_constraintTop_toTopOf="@id/profile_image_settings" />
 
     <CheckBox
         android:id="@+id/member_checkbox"
@@ -36,8 +36,8 @@
         android:shadowColor="@color/design_default_color_secondary"
         android:text="Group Chat"
         android:textColor="@color/design_default_color_secondary_variant"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image_settings"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/profile_image" />
+        app:layout_constraintTop_toTopOf="@id/profile_image_settings" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
