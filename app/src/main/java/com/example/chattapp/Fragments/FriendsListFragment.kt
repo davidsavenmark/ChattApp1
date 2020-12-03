@@ -78,7 +78,7 @@ class FriendsListFragment : Fragment() {
 
                 tempFriendUidList.forEach {
                     val uid = it.uid
-
+// judge it is a friend, not a group.
                     if (uid.length <= 28) {
                         //Get Friend's uid
                         // Look for a user in "users" collection whose uid is Friend's uid.Get its username and profile because we add such a ChatUser(OBS!!different members)in friendsList.
@@ -106,9 +106,11 @@ class FriendsListFragment : Fragment() {
                             }
                         }
                     } else {
-                        //group case
+                        //group case, notice that the friendslist comes later than grouplist!!!!!
                         val x = friendsList.size
-                        friendsList.add(ChatUser(uid = uid, username = "Group-$x"))
+                        val y = uid.substring(0, 5)
+                        //$x to make sure that the group show first from the top. But if a friend name begins with numbers, doesn't work,looking for a better solution.
+                        friendsList.add(ChatUser(uid = uid, username = "$x-Group-$y"))
                         logMaker("1. uid is group case!!!")
                     }
                 }
@@ -126,7 +128,7 @@ class FriendsListFragment : Fragment() {
             val intent: Intent = Intent(requireContext(), SendMessageActivity::class.java)
             intent.putExtra("FRIENDUID", it.uid)
 
-              //logMaker("it.uid is ${it.uid}")
+            //logMaker("it.uid is ${it.uid}")
 
             intent.putExtra("FRIENDUSERNAME", it.username)
             startActivity(intent)
@@ -135,14 +137,14 @@ class FriendsListFragment : Fragment() {
         friends_recyclerView.adapter = adapter
         friends_recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-           //logMaker("2. Create FriendAdapter finished!-----${friendsList.size}")
+        //logMaker("2. Create FriendAdapter finished!-----${friendsList.size}")
 
         val itemDecorator = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         ContextCompat.getDrawable(requireContext(), R.drawable.divider)
             ?.let { itemDecorator.setDrawable(it) }
         friends_recyclerView.addItemDecoration(itemDecorator)
         friends_recyclerView.scrollToPosition(adapter.itemCount - 1)
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
     private fun refreshRecyclerView() {

@@ -33,8 +33,10 @@ class MessageAdapter(
             oneMessage.text = messages.text_message
 
             if(messages.senderUid==currentUid){
+                //If the message is sending from current user, show message on the right.
                 oneMessage.gravity = Gravity.END
             }else{
+                //otherwise, show message on the left.
                 oneMessage.gravity =Gravity.START
             }
         }
