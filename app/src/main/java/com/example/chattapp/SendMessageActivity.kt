@@ -25,7 +25,7 @@ import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_send_message.*
 import kotlinx.android.synthetic.main.fragment_settings.*
-
+//
 class SendMessageActivity : AppCompatActivity() {
 
     private lateinit var messageRef: CollectionReference
