@@ -55,16 +55,16 @@ isChatCheck: Boolean
         var userNameTxt: TextView
         var profileImageView: CircleImageView
         var onlineImageView: CircleImageView
-        var offlineImageView: CircleImageView
-        var lastMessageTxt: TextView
+        //var offlineImageView: CircleImageView
+        //var lastMessageTxt: TextView
 
         init
         {
             userNameTxt = itemView.findViewById(R.id.username)
             profileImageView = itemView.findViewById(R.id.profile_image)
             onlineImageView = itemView.findViewById(R.id.image_online)
-            offlineImageView = itemView.findViewById(R.id.image_offline)
-            lastMessageTxt = itemView.findViewById(R.id.message_last)
+           // offlineImageView = itemView.findViewById(R.id.image_offline)
+            //lastMessageTxt = itemView.findViewById(R.id.message_last)
         }
     }
 
