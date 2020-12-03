@@ -47,9 +47,7 @@ class MainActivity : AppCompatActivity() {
         viewPagerAdapter.addFragment(SearchFragment(), "Search")
         viewPagerAdapter.addFragment(SettingsFragment(), "Settings")
 
-        btn_change_password.setOnClickListener {
-            changePassword()
-        }
+
 
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
