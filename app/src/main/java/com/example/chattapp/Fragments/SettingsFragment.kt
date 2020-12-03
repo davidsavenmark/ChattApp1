@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
@@ -45,10 +46,12 @@ class SettingsFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             mSelected = Matisse.obtainResult(data)
             profileImageUri = mSelected.first()
             showImage(profileImageUri, profile_image_settings)
+            update_button.visibility = View.VISIBLE
         }
     }
 
@@ -86,7 +89,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        update_button.visibility = GONE
         firebaseUser = FirebaseAuth.getInstance().currentUser
         storage = Firebase.storage
         val storageRef = storage.reference
@@ -103,6 +106,7 @@ class SettingsFragment : Fragment() {
             .addOnFailureListener {
 
             }
+
         //Add a button "update", if click it,upload the picture you choose in local mobil to Storage, path is /images.
         update_button.setOnClickListener {
             val file: Uri = profileImageUri
@@ -112,13 +116,19 @@ class SettingsFragment : Fragment() {
             uploadTask
                 .addOnFailureListener {
                     logMaker("Upload failed!($file)")
+                    toastMaker("Your profile picture has not been updated successfully!")
+                    update_button.visibility = View.VISIBLE
                 }
                 .addOnSuccessListener { taskSnapshot ->
                     logMaker("Upload success!($file),${taskSnapshot.uploadSessionUri}")
+                    update_button.visibility = GONE
+                    toastMaker("Your profile picture has been updated successfully!")
                 }
                 .continueWithTask { task ->
                     if (!task.isSuccessful) {
                         task.exception?.let {
+                            toastMaker("Your profile picture has not been updated successfully!")
+                            update_button.visibility = View.VISIBLE
                             throw it
                         }
                     }
@@ -134,17 +144,12 @@ class SettingsFragment : Fragment() {
                         userRef.document(firebaseUser!!.uid)
                             .update("profile", downloadUri.toString())
                             .addOnSuccessListener {
-                                Log.d(
-                                    "TAG!!!",
-                                    "DocumentSnapshot successfully updated!"
-                                )
+                                logMaker("DocumentSnapshot successfully updated!")
                             }
                             .addOnFailureListener { exception ->
-                                Log.w(
-                                    "TAG!!!",
-                                    "Error updating document",
-                                    exception
-                                )
+                                logMaker("Error updating document$exception")
+                                toastMaker("Your profile picture has not been updated successfully!")
+                                update_button.visibility = View.VISIBLE
                             }
 
                     }
@@ -204,5 +209,8 @@ class SettingsFragment : Fragment() {
 
     private fun logMaker(text: String) {
         Log.v("ChatApp", text)
+    }
+    private fun toastMaker(text: String) {
+        Toast.makeText(requireContext(), "$text", Toast.LENGTH_LONG).show()
     }
 }

@@ -11,7 +11,9 @@ import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chattapp.R
@@ -23,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_friendslist.*
 import kotlinx.android.synthetic.main.fragment_search.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -64,6 +67,7 @@ class SearchFragment : Fragment() {
         recyclerView = view.findViewById(R.id.searchList)
         recyclerView!!.setHasFixedSize(true)
         recyclerView!!.layoutManager = LinearLayoutManager(context)
+
 
         searchEditText = view.findViewById(R.id.searchUsersET)
         initUserDataBase()
@@ -167,6 +171,10 @@ class SearchFragment : Fragment() {
             if (recyclerView!!.adapter != null) {
                 val temp = recyclerView!!.adapter as UserAdapter
                 temp.updateDataList(userList)
+                val itemDecorator = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+                ContextCompat.getDrawable(requireContext(), R.drawable.divider)
+                    ?.let { itemDecorator.setDrawable(it) }
+                recyclerView!!.addItemDecoration(itemDecorator)
                 recyclerView!!.scrollToPosition(temp.itemCount - 1)
             }
         }

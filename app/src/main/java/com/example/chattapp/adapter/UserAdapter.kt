@@ -26,12 +26,8 @@ class UserAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var userNameTxt: TextView = itemView.findViewById(R.id.username)
         var profileImageView: CircleImageView = itemView.findViewById(R.id.profile_image)
-        var onlineImageView: CircleImageView = itemView.findViewById(R.id.image_online)
-
         //var offlineImageView: CircleImageView = itemView.findViewById(R.id.image_offline)
-        var lastMessageTxt: TextView = itemView.findViewById(R.id.message_last)
         var checkBox: CheckBox = itemView.findViewById(R.id.member_checkbox)
-
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -43,11 +39,9 @@ class UserAdapter(
     override fun getItemCount(): Int = userList.size
 
     override fun onBindViewHolder(holder: ViewHolder, i: Int) {
-
         val user: Users = userList[i]
 
         holder.apply {
-
             checkBox.visibility = View.VISIBLE
             checkBox.isChecked = false
             checkBox.setOnCheckedChangeListener { compoundButton: CompoundButton, b: Boolean ->
@@ -62,7 +56,6 @@ class UserAdapter(
             userNameTxt.setOnClickListener {
                 listener(user)
             }
-
         }
     }
 

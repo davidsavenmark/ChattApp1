@@ -126,7 +126,7 @@ class FriendsListFragment : Fragment() {
             val intent: Intent = Intent(requireContext(), SendMessageActivity::class.java)
             intent.putExtra("FRIENDUID", it.uid)
 
-            logMaker("it.uid is ${it.uid}")
+              //logMaker("it.uid is ${it.uid}")
 
             intent.putExtra("FRIENDUSERNAME", it.username)
             startActivity(intent)
@@ -135,14 +135,14 @@ class FriendsListFragment : Fragment() {
         friends_recyclerView.adapter = adapter
         friends_recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        logMaker("2. Create FriendAdapter finished!-----${friendsList.size}")
+           //logMaker("2. Create FriendAdapter finished!-----${friendsList.size}")
 
         val itemDecorator = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         ContextCompat.getDrawable(requireContext(), R.drawable.divider)
             ?.let { itemDecorator.setDrawable(it) }
         friends_recyclerView.addItemDecoration(itemDecorator)
         friends_recyclerView.scrollToPosition(adapter.itemCount - 1)
-        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
     private fun refreshRecyclerView() {
