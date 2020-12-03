@@ -55,30 +55,31 @@ class SendMessageActivity : AppCompatActivity() {
         //prepareTestData()
         if (friendUid.length <= 28) {
             initDataBase()
+            userRef= db.collection("users")
+            val friendUidDocument= userRef.document(friendUid)
+            lateinit var friendProfile:String
+            friendUidDocument.get()
+                .addOnSuccessListener{
+                    if (it != null) {
+                        //ger the value of field "profile"
+                        friendProfile = it.data?.get("profile") as String
+                        Log.d("TAG", "profilesUri is $friendProfile")
+                        //must be here, if the data is back from server in USA,can show, otherwise has the problem of initialization.
+                        showImage(friendProfile.toUri() ,profile_image_mchat)
+                    }else {
+                        Log.d("TAG", "No such document")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("TAG", "get failed with ", exception)
+                }
         } else {
             initGroupDataBase()
         }
         initListener()
         initRecyclerView()
         realTimeUpdateMessage()
-        userRef= db.collection("users")
-        val currentUserDocument= userRef.document(firebaseUserID)
-        lateinit var currentUserProfile:String
-        currentUserDocument.get()
-            .addOnSuccessListener{
-                if (it != null) {
-                    //ger value of field "profile"
-                    currentUserProfile=it.data?.get("profile") as String
-                    Log.d("TAG", "profilesUri is $currentUserProfile")
-                    //must be here, if the data is back from server in USA,can show, otherwise has the problem of initialization.
-                    showImage(currentUserProfile.toUri() ,profile_image_mchat)
-                }else {
-                    Log.d("TAG", "No such document")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("TAG", "get failed with ", exception)
-            }
+
         username_mchat.text = friendUsername
         //val username = intent?.getStringExtra(CURRENTUSER)
 
