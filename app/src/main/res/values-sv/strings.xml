@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MiaoMessenger</string>
+    <string name="action_settings">Inställningar</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="welcome">Välkommen</string>
+
+    <string name="first_fragment_label">Första Fragmentet</string>
+    <string name="second_fragment_label">Andra fragmentet</string>
+    <string name="next">Följande</string>
+    <string name="previous">Föregående</string>
+
+    <string name="hello_first_fragment">Hej första fragmentet</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reset_your_password">Återställ ditt lösenord</string>
+    <string name="what_would_you_like_your_new_password_to_be">Vad vill du att ditt nya lösenord ska vara?</string>
+    <string name="create">Skapa</string>
+    <string name="chats">Chattar</string>
+    <string name="password">Lösenord</string>
+    <string name="update">Uppdattera</string>
+    <string name="forgot_password">Glömt lösenord</string>
+    <string name="forgot_your_password">Har du glömt ditt lösenord?</string>
+    <string name="enter_your_email_address_and_we_will_send_you_a_link_to_reset_your_password">Skriv in din mail så kommer du få ett mail med instruktioner</string>
+    <string name="login">Logga in</string>
+    <string name="new_password">Nytt lösenord</string>
+    <string name="check_your_mail">Kolla din epost!</string>
+    <string name="instructions">Du har nu fått ett mail med instruktioner om hur du ändrar ditt lösenord</string>
+    <string name="for_any_questions">För frågor och problem, kan du nå oss via:</string>
+    <string name="email">Epost</string>
+    <string name="have_you_forgott_password">Har du glömt ditt lösenord?</string>
+    <string name="username">Användarnamn</string>
+    <string name="register">Registrera</string>
+    <string name="new_password_to_be">Vad vill du att ditt nya lösenord ska vara?</string>
+    <string name="create_group">Skapa Grupp</string>
+    <string name="search_for_users">Leta efter användare</string>
+
+</resources>
