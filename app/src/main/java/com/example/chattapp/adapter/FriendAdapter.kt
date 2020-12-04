@@ -23,7 +23,7 @@ class FriendAdapter(//members: a list is a must,listner, it depends on.inheritag
 //class "FriendsViewHolder" is a must, see up,FriendsViewHolder.
     inner class FriendsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var oneFriendViewName: TextView = view.findViewById(R.id.username)
-        var oneFriendViewImage: ImageView = view.findViewById(R.id.profile_image_settings)
+        var oneFriendViewImage: ImageView = view.findViewById(R.id.profile_image)
         var checkBox: CheckBox = view.findViewById(R.id.member_checkbox)
     }
 //Three methods to implement.

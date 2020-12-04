@@ -18,7 +18,7 @@
             //ändra bilden till något annat
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image_settings"
+                android:id="@+id/profile_image"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_centerHorizontal="true"
@@ -32,7 +32,7 @@
                 android:id="@+id/username_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/profile_image_settings"
+                android:layout_below="@+id/profile_image"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="20dp"

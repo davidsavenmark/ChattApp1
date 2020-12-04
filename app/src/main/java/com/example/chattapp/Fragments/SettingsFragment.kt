@@ -50,7 +50,7 @@ class SettingsFragment : Fragment() {
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             mSelected = Matisse.obtainResult(data)
             profileImageUri = mSelected.first()
-            showImage(profileImageUri, profile_image_settings)
+            showImage(profileImageUri, profile_image)
             update_button.visibility = View.VISIBLE
         }
     }
@@ -100,7 +100,7 @@ class SettingsFragment : Fragment() {
             .addOnSuccessListener { result ->
                 val profile = result["profile"] as String
                 if (profile != ChatUser.profileDefault) {
-                    showImage(profile.toUri(), profile_image_settings)
+                    showImage(profile.toUri(), profile_image)
                 }
             }
             .addOnFailureListener {
@@ -157,7 +157,7 @@ class SettingsFragment : Fragment() {
         }
 
 //Profile management, when click on the picture, first judge is the app have the permission to visit the local pictures. Request for permission granted.
-        profile_image_settings.setOnClickListener {
+        profile_image.setOnClickListener {
             //check if you have the permission to get the picture from local mobile, if no, ask for request,if yes, call Matisse.Just the first time to start needs this,after that,no need.
             if (ContextCompat.checkSelfPermission(
                     requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE

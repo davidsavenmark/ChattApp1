@@ -40,8 +40,8 @@
             android:layout_height="50dp"
             android:background="@drawable/roundstyle"
             android:backgroundTint="@android:color/white"
-            android:hint="Username"
             android:gravity="center"
+            android:hint="@string/username"
             android:inputType="text"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black">
@@ -55,9 +55,9 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/roundstyle"
             android:backgroundTint="@android:color/white"
-            android:hint="Email"
-            android:inputType="text"
             android:gravity="center"
+            android:hint="@string/email"
+            android:inputType="text"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black">
 
@@ -70,9 +70,9 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/roundstyle"
             android:backgroundTint="@android:color/white"
-            android:hint="Password"
-            android:inputType="textPassword"
             android:gravity="center"
+            android:hint="@string/password"
+            android:inputType="textPassword"
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black">
 
@@ -86,7 +86,7 @@
             android:background="@drawable/roundstyle"
             android:bottomLeftRadius="10dp"
             android:bottomRightRadius="10dp"
-            android:text="Register"
+            android:text="@string/register"
             android:textColor="#000000"
             android:topLeftRadius="10dp"
             android:topRightRadius="10dp">

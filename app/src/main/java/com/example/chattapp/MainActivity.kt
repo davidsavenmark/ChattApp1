@@ -31,6 +31,8 @@ import kotlinx.android.synthetic.main.fragment_settings.*
 class MainActivity : AppCompatActivity() {
     private lateinit var userRef: CollectionReference
     private lateinit var firebaseUserID: String
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                     currentUserProfile=it.data?.get("profile") as String
                     Log.d("TAG", "profilesUri is $currentUserProfile")
                     //must be here, if the data is back from server in USA,can show, otherwise has the problem of initialization.
-                    showImage(currentUserProfile.toUri() ,profile_image_settings)
+                    showImage(currentUserProfile.toUri() ,profile_image)
                 }else {
                     Log.d("TAG", "No such document")
                 }

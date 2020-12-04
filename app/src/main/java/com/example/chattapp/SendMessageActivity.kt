@@ -37,13 +37,15 @@ class SendMessageActivity : AppCompatActivity() {
     private lateinit var sharedPictureUri: Uri
     val db = Firebase.firestore
     private lateinit var userRef: CollectionReference
+    private lateinit var profile_image : ImageView
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SettingsFragment.REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             mSelected = Matisse.obtainResult(data)
             sharedPictureUri = mSelected.first()
-            showImage(sharedPictureUri, profile_image_settings)
+            showImage(sharedPictureUri, profile_image)
         }
     }
 

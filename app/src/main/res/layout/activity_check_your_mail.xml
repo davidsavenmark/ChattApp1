@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="We just emailed you with instructions to reset your password"
+        android:text="@string/instructions"
         android:textColor="#FFFFFF"
         android:textSize="20dp" />
 
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:gravity="center"
-        android:text="For any questions or problems please email us at"
+        android:text="@string/for_any_questions"
         android:textColor="#FFFFFF"
         android:textSize="17dp" />
 

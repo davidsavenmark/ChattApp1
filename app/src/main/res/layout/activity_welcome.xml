@@ -20,10 +20,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="Welcome"
+        android:text="@string/welcome"
         android:textColor="@android:color/white"
         android:textSize="45dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/register_welcome_btn"
@@ -35,7 +35,7 @@
         android:background="@drawable/roundstyle"
         android:backgroundTint="@android:color/white"
         android:foregroundTint="#FFFFFF"
-        android:text="Register"
+        android:text="@string/register"
         android:textColor="#000000"
         app:iconTint="#FFFFFF"
         app:rippleColor="#FFFFFF">
@@ -50,7 +50,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/roundstyle"
-        android:text="Login"
+        android:text="@string/login"
 
         android:textColor="#000000"
         android:textColorHighlight="@android:color/white">
