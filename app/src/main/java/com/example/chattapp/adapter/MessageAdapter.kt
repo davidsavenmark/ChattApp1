@@ -35,9 +35,11 @@ class MessageAdapter(
             if(messages.senderUid==currentUid){
                 //If the message is sending from current user, show message on the right.
                 oneMessage.gravity = Gravity.END
+                oneMessage.setBackgroundResource(R.color.colorOnMessageFromCurrentUser)
             }else{
                 //otherwise, show message on the left.
                 oneMessage.gravity =Gravity.START
+                oneMessage.setBackgroundResource(R.color.colorOnMessageFromOtherSender)
             }
         }
     }

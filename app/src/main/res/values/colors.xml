@@ -9,6 +9,8 @@
     <color name="colorSecondary">#A47DE8</color>
     <color name="colorSecondaryVariant">#4BCA58</color>
     <color name="colorOnSecondary">#4264F8</color>
+    <color name="colorOnMessageFromOtherSender">#DCDCDC</color>
+    <color name="colorOnMessageFromCurrentUser">#69B7C1</color>
 
 </resources>
 
