@@ -188,9 +188,6 @@ class SearchFragment : Fragment() {
 
     }
 
-    private fun logMaker(text: String) {
-        Log.d("ChatApp", text)
-    }
 
     /*Search the users by the name!*/
     private fun searchForUsers(input: String) {
@@ -253,6 +250,10 @@ class SearchFragment : Fragment() {
             create_group.visibility = View.VISIBLE
         }
         logMaker("tempGroup is $tempGroup")
+
+    }
+    private fun logMaker(text: String) {
+        Log.d("ChatApp", text)
     }
 
     //To do: If the person has already been your friend, do not show him(her) in the list.To be continued!

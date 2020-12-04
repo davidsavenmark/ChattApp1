@@ -18,7 +18,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class UserAdapter(
     private var userList: MutableList<Users>,
-    //listener as a variable
+    //listeners as a variables or members.
     private val listener: (Users) -> Unit,
     private var checkBoxListener: (Boolean, Users) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.ViewHolder?>() {
@@ -26,6 +26,7 @@ class UserAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var userNameTxt: TextView = itemView.findViewById(R.id.username)
         var profileImageView: CircleImageView = itemView.findViewById(R.id.profile_image)
+
         //var offlineImageView: CircleImageView = itemView.findViewById(R.id.image_offline)
         var checkBox: CheckBox = itemView.findViewById(R.id.member_checkbox)
     }
@@ -44,7 +45,7 @@ class UserAdapter(
         holder.apply {
             checkBox.visibility = View.VISIBLE
             checkBox.isChecked = false
-            checkBox.setOnCheckedChangeListener { compoundButton: CompoundButton, b: Boolean ->
+            checkBox.setOnCheckedChangeListener { _: CompoundButton, b: Boolean ->
                 checkBoxListener(b, user)
             }
 
@@ -58,13 +59,11 @@ class UserAdapter(
             }
         }
     }
-
-    //Notify the changes of data.
-    fun updateDataList() {
+    //Notify the changes of data without any parameters.
+    fun updateDataList(){
         notifyDataSetChanged()
     }
-
-    //Notify the changes of data.
+    //Notify the changes of data with a mutable list as a parameter.
     fun updateDataList(list: MutableList<Users>) {
         userList = list
         notifyDataSetChanged()

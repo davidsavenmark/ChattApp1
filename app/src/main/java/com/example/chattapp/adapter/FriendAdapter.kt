@@ -18,7 +18,6 @@ class FriendAdapter(//members: a list is a must,listner, it depends on.inheritag
     private var friendsList: MutableList<ChatUser>,
     private var listener: (ChatUser) -> Unit,
     private var showCheckBoxOrNot:Boolean,
-
 ) : RecyclerView.Adapter<FriendAdapter.FriendsViewHolder>() {
 //class "FriendsViewHolder" is a must, see up,FriendsViewHolder.
     inner class FriendsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
