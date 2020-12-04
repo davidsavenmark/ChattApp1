@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chattapp.R
+import com.example.chattapp.R.layout.fragment_search
 import com.example.chattapp.adapter.UserAdapter
 import com.example.chattapp.model.Friend
 import com.example.chattapp.model.GroupName
@@ -62,7 +63,7 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view: View = inflater.inflate(R.layout.fragment_search, container, false)
+        val view: View = inflater.inflate(fragment_search, container, false)
 
         recyclerView = view.findViewById(R.id.searchList)
         recyclerView!!.setHasFixedSize(true)
