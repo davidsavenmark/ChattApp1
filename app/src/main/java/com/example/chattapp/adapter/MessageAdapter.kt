@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chattapp.R
 import com.example.chattapp.model.ChatLine
-
+//
 
 class MessageAdapter(
     private var messageList: MutableList<ChatLine>,
