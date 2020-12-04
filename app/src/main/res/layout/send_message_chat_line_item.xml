@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:padding="3dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -12,8 +13,9 @@
         android:layout_centerInParent="true"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
-        android:gravity="start"
+        android:layout_gravity="end"
         android:textSize="19sp"
+        android:background="@color/colorOnMessageFromOtherSender"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="message" />
 

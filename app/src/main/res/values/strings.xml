@@ -21,4 +21,6 @@
     <string name="enter_your_email_address_and_we_will_send_you_a_link_to_reset_your_password">Enter your e-mail address and we´ll send you a link to reset your password</string>
     <string name="login">Login</string>
     <string name="new_password">New Password</string>
+    <string name="create_group">Create Group</string>
+    <string name="search_for_users">Search for users</string>
 </resources>

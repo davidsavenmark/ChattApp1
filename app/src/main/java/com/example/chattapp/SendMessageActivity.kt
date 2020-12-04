@@ -22,7 +22,6 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.zhihu.matisse.Matisse
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_send_message.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 //
@@ -32,6 +31,7 @@ class SendMessageActivity : AppCompatActivity() {
     private var messageList = mutableListOf<ChatLine>()
     private lateinit var mSelected: List<Uri>
     private lateinit var firebaseUserID: String
+    private var currentUserName: String = ""
     private lateinit var friendUid: String
     private lateinit var friendUsername: String
     private lateinit var sharedPictureUri: Uri
@@ -52,21 +52,22 @@ class SendMessageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_message)
         getVariables()
+
+        userRef = db.collection("users")
         //prepareTestData()
         if (friendUid.length <= 28) {
             initDataBase()
-            userRef= db.collection("users")
-            val friendUidDocument= userRef.document(friendUid)
-            lateinit var friendProfile:String
+            val friendUidDocument = userRef.document(friendUid)
+            lateinit var friendProfile: String
             friendUidDocument.get()
-                .addOnSuccessListener{
+                .addOnSuccessListener {
                     if (it != null) {
                         //ger the value of field "profile"
                         friendProfile = it.data?.get("profile") as String
                         Log.d("TAG", "profilesUri is $friendProfile")
                         //must be here, if the data is back from server in USA,can show, otherwise has the problem of initialization.
-                        showImage(friendProfile.toUri() ,profile_image_mchat)
-                    }else {
+                        showImage(friendProfile.toUri(), profile_image_mchat)
+                    } else {
                         Log.d("TAG", "No such document")
                     }
                 }
@@ -83,6 +84,12 @@ class SendMessageActivity : AppCompatActivity() {
         username_mchat.text = friendUsername
         //val username = intent?.getStringExtra(CURRENTUSER)
 
+        userRef.document(firebaseUserID).get()
+            .addOnSuccessListener {
+                if (it != null) {
+                    currentUserName = it.data?.get("username") as String
+                }
+            }
     }
 
     override fun onStart() {
@@ -145,7 +152,7 @@ class SendMessageActivity : AppCompatActivity() {
     private fun initListener() {
 
         send_message_btn.setOnClickListener {
-            val message = text_message.text.toString()
+            val message = currentUserName + ": "+ text_message.text.toString()
             if (message.isBlank()) {
                 return@setOnClickListener
             }
