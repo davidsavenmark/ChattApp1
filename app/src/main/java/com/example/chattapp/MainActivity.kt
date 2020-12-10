@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.title = ""
 
 
+
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         viewPagerAdapter.addFragment(FriendsListFragment(), "Chats")
         viewPagerAdapter.addFragment(SearchFragment(), "Search")
